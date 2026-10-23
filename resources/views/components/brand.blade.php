@@ -1,0 +1,1 @@
+<a href="/" class="brand" aria-label="STICKER FIGHT — الرئيسية" dir="ltr"><img src="/brand/{{ \App\Services\StoreSettings::get('logo_variant','icon') }}.svg" width="48" height="46" alt=""><span><strong>STICKER <em>FIGHT</em></strong><small>Custom Card Skins</small></span></a>

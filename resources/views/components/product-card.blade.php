@@ -1,0 +1,6 @@
+@props(['product'])
+@php
+    $basePrice = $product->base_price_iqd;
+    $hasDistinctDescription = filled($product->description) && mb_strtolower(trim($product->description)) !== mb_strtolower(trim($product->name));
+@endphp
+<article class="product-card"><a class="product-image" href="/products/{{ $product->slug }}" aria-label="{{ $product->name }}">@if($product->is_bestseller)<span class="bestseller-badge"><x-icon name="sparkles" size="13"/>{{ __('اكثر مبيعاً') }}</span>@else<span class="product-label">READY DESIGN</span>@endif<div class="card-mock"><img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" draggable="false" width="856" height="540"><span class="mock-chip" aria-hidden="true"><i></i></span></div><span class="product-open"><x-icon name="arrow-up-left" size="18"/></span></a><div class="product-info"><div class="product-meta"><h3><a href="/products/{{ $product->slug }}">{{ $product->name }}</a></h3>@if($hasDistinctDescription)<p dir="ltr">{{ $product->description }}</p>@endif @if($basePrice!==null)<span class="product-price">{{ number_format($basePrice) }} <small>{{ __('د.ع') }}</small></span>@endif</div><a href="/products/{{ $product->slug }}#order-options" class="icon-button" aria-label="{{ __('خيارات طلب :name',['name'=>$product->name]) }}"><x-icon name="bag" size="19"/></a></div></article>

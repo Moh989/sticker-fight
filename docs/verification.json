@@ -1,0 +1,425 @@
+{
+  "backend": {
+    "tests": 87,
+    "assertions": 722,
+    "passed": true
+  },
+  "browser": {
+    "flows": 10,
+    "errors": [],
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "passed": true
+  },
+  "responsive_widths": [
+    360,
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "languages": [
+    "ar",
+    "en"
+  ],
+  "production": {
+    "checks": 16,
+    "page_mm": [
+      89.6,
+      57.98
+    ],
+    "trim_mm": [
+      85.6,
+      53.98
+    ],
+    "png_px": [
+      1058,
+      685
+    ],
+    "ppi": 300,
+    "physical_approval": false
+  },
+  "backup": {
+    "encrypted": true,
+    "sha256_verified_files": 111,
+    "isolated_mysql_restore_verified": true
+  },
+  "owner_settings_required": [
+    "prices",
+    "materials",
+    "finishes",
+    "shipping",
+    "contact",
+    "policies",
+    "physical_template_approval",
+    "hosting"
+  ],
+  "local_start": {
+    "command": "./scripts/start-local.sh",
+    "home_status": 200,
+    "robots_private_disallows": true
+  },
+  "php_syntax_files": 93,
+  "release_contains_credentials": false,
+  "editor_upload_locale_regression": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "passed": true,
+    "checks": [
+      "direct_personal_image_upload_with_visible_acknowledgement",
+      "private_asset_ownership",
+      "language_return_path_and_filters_after_background_404",
+      "draft_preserved_before_language_navigation",
+      "idempotent_save_on_mysql",
+      "failed_save_preserves_current_page"
+    ],
+    "errors": []
+  },
+  "pricing": {
+    "general_price_fallback_by_mode": true,
+    "special_price_precedence": true,
+    "zero_is_valid_special_price": true,
+    "gallery_sort_uses_effective_price": true,
+    "server_validated_cart_and_checkout": true,
+    "submitted_order_prices_immutable": true
+  },
+  "ready_products": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "modes": [
+      "single",
+      "double",
+      "mixed"
+    ],
+    "direct_cart_without_editor": true,
+    "server_generated_locked_artwork": true,
+    "cart_options_replace_without_artwork_edit": true,
+    "private_guest_ownership": true,
+    "catalogue_asset_cannot_become_an_editable_layer": true,
+    "production_export_verified_in_qa": true,
+    "responsive_widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "errors": []
+  },
+  "visitor_image_controls": {
+    "context_menu_blocked": true,
+    "image_drag_blocked": true,
+    "inputs_and_admin_exempt": true,
+    "prevents_screenshots_or_source_extraction": false
+  },
+  "bestsellers": {
+    "passed": true,
+    "backend_tests": 8,
+    "backend_assertions": 113,
+    "threshold_exclusive": 10,
+    "counting": "distinct cart additions plus distinct order requests per public product",
+    "quantity_changes_counted": false,
+    "retries_counted": false,
+    "private_designs_published": false,
+    "history_survives_cart_removal_and_checkout": true,
+    "historical_backfill": "existing carts and orders only",
+    "browser": [
+      {
+        "engine": "chromium",
+        "threshold_10_11": true,
+        "retry_ok": true,
+        "filter": true,
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "threshold_10_11": true,
+        "retry_ok": true,
+        "filter": true,
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "errors": []
+      }
+    ],
+    "primary_database_counts_match_events": true
+  },
+  "personal_upload_catalogue_collision": {
+    "passed": true,
+    "additional_backend_tests": 5,
+    "independent_upload_and_catalogue_origins": true,
+    "same_bytes_personal_upload_editable": true,
+    "ready_asset_remains_locked": true,
+    "repair_metadata_scoped_to_owner": true,
+    "legacy_assets_preserve_lock": true,
+    "unsafe_origin_merge_on_rollback_blocked": true,
+    "browser": [
+      {
+        "engine": "chromium",
+        "samePhotoAsCatalogue": true,
+        "separateReadyAndUploadAssets": true,
+        "personalSaveAndTextEdit": true,
+        "languageNavigationPreservesWork": true,
+        "readyCopyBlocked": true,
+        "privateAsset": true,
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "samePhotoAsCatalogue": true,
+        "separateReadyAndUploadAssets": true,
+        "personalSaveAndTextEdit": true,
+        "languageNavigationPreservesWork": true,
+        "readyCopyBlocked": true,
+        "privateAsset": true,
+        "errors": []
+      }
+    ],
+    "draft_recovery": [
+      {
+        "engine": "chromium",
+        "legacyDraftRepairedByReupload": true,
+        "positionRotationAndTextPreserved": true,
+        "noDuplicateLayer": true,
+        "readyCartUnchanged": true,
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "legacyDraftRepairedByReupload": true,
+        "positionRotationAndTextPreserved": true,
+        "noDuplicateLayer": true,
+        "readyCartUnchanged": true,
+        "errors": []
+      }
+    ],
+    "main_home_status": 200,
+    "main_editor_status": 200
+  },
+  "template_compatibility": {
+    "passed": true,
+    "additional_backend_tests": 8,
+    "frontend_checks": 8,
+    "compatible_default_material": true,
+    "explicit_invalid_selection_rejected": true,
+    "unsupported_material_and_finish_disabled": true,
+    "clear_side_ignores_printed_finish": true,
+    "draft_artwork_preserved_when_options_corrected": true,
+    "stale_quote_ignored": true,
+    "primary_database_approvals_modified": false,
+    "primary_read_only_quote_status": 200,
+    "production_manifest_material_and_finish_per_side": true,
+    "sample_print_pixels_unchanged": true,
+    "browser": [
+      {
+        "engine": "chromium",
+        "unsupportedMaterialAndFinishDisabled": true,
+        "invalidDraftRepairedWithoutArtChanges": true,
+        "staleQuoteIgnored": true,
+        "readyDirectCart": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "unsupportedMaterialAndFinishDisabled": true,
+        "invalidDraftRepairedWithoutArtChanges": true,
+        "staleQuoteIgnored": true,
+        "readyDirectCart": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "compiled_blade_files": 57,
+  "appearance": {
+    "passed": true,
+    "default": "dark",
+    "modes": [
+      "dark",
+      "light"
+    ],
+    "additional_backend_tests": 4,
+    "brand_palette_preserved": true,
+    "semantic_ui_colors": true,
+    "server_rendered_preference": true,
+    "cookie_allowlist": [
+      "dark",
+      "light"
+    ],
+    "cookie": "sf_theme",
+    "local_storage_key": "sticker-fight:theme",
+    "light_mode_visible_text_checks": 386,
+    "light_mode_text_contrast_failures": 0,
+    "placeholder_contrast_checked": true,
+    "mono_logo_original_colors_preserved": true,
+    "browser": [
+      {
+        "engine": "chromium",
+        "defaultDark": true,
+        "touchAndKeyboard": true,
+        "persistedBeforePaint": true,
+        "crossTabSync": true,
+        "storageFallback": true,
+        "artworkAndMatUnchanged": true,
+        "checkoutTotalUnchanged": true,
+        "admin": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "defaultDark": true,
+        "touchAndKeyboard": true,
+        "persistedBeforePaint": true,
+        "crossTabSync": true,
+        "storageFallback": true,
+        "artworkAndMatUnchanged": true,
+        "checkoutTotalUnchanged": true,
+        "admin": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "design_cta": {
+    "passed": true,
+    "browser_cases": 40,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "mobile_menu_highlight": true,
+    "keyboard_focus_and_navigation": true,
+    "editor_navigation": true,
+    "shine_iterations": 3,
+    "reduced_motion_disables_effect": true,
+    "header_overlap": false,
+    "errors": []
+  },
+  "catalog_folder_import": {
+    "passed": true,
+    "source_folder": "sss",
+    "images": 80,
+    "category_groups": 8,
+    "new_categories": 7,
+    "existing_categories_reused": 1,
+    "source_files_unchanged": true,
+    "private_original_hashes_verified": 80,
+    "existing_products_changed": 0,
+    "general_price_fallback": true,
+    "public_image_status_checks": 80,
+    "product_page_status_checks": 80,
+    "browser_category_checks": 16,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "orders_created": 0,
+    "cart_items_created": 0,
+    "local_php_upload_max_filesize": "12M",
+    "local_php_post_max_size": "16M",
+    "local_php_memory_limit": "512M",
+    "errors": []
+  },
+  "github_review": {
+    "review_date": "2026-10-23",
+    "backend_tests": 87,
+    "backend_assertions": 722,
+    "composer_validate": true,
+    "composer_advisories": 0,
+    "npm_advisories": 0,
+    "catalog_import_tests": 5,
+    "catalog_reimport_created": 0,
+    "catalog_reimport_skipped": 80,
+    "translation_files_in_release": true,
+    "catalog_source_images_included": 80,
+    "private_data_excluded": true,
+    "staged_secret_findings": 0,
+    "physical_print_sample_verified": false
+  }
+}

@@ -1,0 +1,16 @@
+import {PDFDocument} from 'pdf-lib';
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {renderSide,renderCut,imagePpi,warnings} from '../resources/js/shared/renderer.mjs';
+const spec=JSON.parse(await readFile('samples/source.json','utf8'));
+const pdf=await PDFDocument.load(await readFile('samples/production/back-print.pdf'));
+const page=pdf.getPage(0),size=page.getSize(),trim=page.getTrimBox(),bleed=page.getBleedBox(),pt=72/25.4;
+assert.equal(pdf.getPageCount(),1);assert.ok(Math.abs(size.width/pt-89.6)<.0001);assert.ok(Math.abs(size.height/pt-57.98)<.0001);assert.ok(Math.abs(trim.width/pt-85.6)<.0001);assert.ok(Math.abs(trim.height/pt-53.98)<.0001);assert.ok(Math.abs(trim.x/pt-2)<.0001);assert.ok(Math.abs(bleed.width-size.width)<.0001);
+const png=await readFile('samples/production/back-print.png'),w=png.readUInt32BE(16),h=png.readUInt32BE(20);assert.ok(Math.abs(w-89.6/25.4*300)<=2);assert.ok(Math.abs(h-57.98/25.4*300)<=2);
+const svg=await readFile('samples/production/back-artwork.svg','utf8');for(const text of ['STICKER FIGHT','checkerboard','mat-label','selection-outline','guide','mock-chip'])assert.equal(svg.includes(text),false);
+assert.ok(svg.includes('هذه بطاقتي'));assert.ok(svg.includes('clip-rule="evenodd"'));assert.ok(renderSide(spec.document.sides.back,spec.templates.back,{guides:true}).includes('data-guide="bleed"'));assert.ok(!svg.includes('data-guide='));assert.ok(!svg.includes('onload='));
+const clear=renderSide({background:'#ffffff',elements:[]},spec.templates.front,{transparent:true});assert.ok(!clear.includes('<rect'));assert.ok(!clear.includes('<image'));assert.ok(renderCut(spec.templates.front).includes('85.6mm'));
+const dangerous={background:'#000000',elements:[{id:'text',type:'text',text:'<script>alert("XSS")</script>',font:'Cairo',fontSize:5,color:'#ffffff',align:'middle',x:1,y:4,width:60,height:12,rotation:0}]};assert.ok(!renderSide(dangerous,spec.templates.front).includes('<script>'));
+assert.equal(imagePpi({width:25.4,height:25.4,fit:'cover'},{width:100,height:200}),100);assert.ok(warnings(dangerous,spec.templates.front).length>0);
+const mixedLTR={...dangerous,elements:[{...dangerous.elements[0],text:'MY CARD · بطاقتي',align:'start'}]},mixedRTL={...dangerous,elements:[{...dangerous.elements[0],text:'بطاقتي · MY CARD',align:'start'}]};assert.ok(renderSide(mixedLTR,spec.templates.front).includes('<text x="0"'));assert.ok(renderSide(mixedLTR,spec.templates.front).includes('direction="ltr"'));assert.ok(renderSide(mixedRTL,spec.templates.front).includes('<text x="60"'));
+console.log(JSON.stringify({passed:true,page_mm:{width:size.width/pt,height:size.height/pt},trim_mm:{width:trim.width/pt,height:trim.height/pt},png:{width:w,height:h},ppi:300,checks:16}));
