@@ -544,5 +544,73 @@
       ],
       "javascript_errors": 0
     }
+  },
+  "installation_guide": {
+    "illustrations": 6,
+    "format": "SVG",
+    "source": "original project illustrations",
+    "steps": [
+      "match",
+      "clean",
+      "peel",
+      "align",
+      "smooth",
+      "check"
+    ],
+    "image_dimensions": [
+      1024,
+      768
+    ],
+    "total_image_bytes": 21640,
+    "desktop_image_and_description_side_by_side": true,
+    "mobile_image_above_description": true,
+    "front_chip_and_back_stripe_uncovered": true,
+    "public_page_test_passed": true,
+    "browsers": [
+      {
+        "engine": "chromium",
+        "images": 6,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "themes": [
+          "dark",
+          "light"
+        ],
+        "allImagesLoaded": true,
+        "noHorizontalOverflow": true,
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "images": 6,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "themes": [
+          "dark",
+          "light"
+        ],
+        "allImagesLoaded": true,
+        "noHorizontalOverflow": true,
+        "errors": []
+      }
+    ]
   }
 }
