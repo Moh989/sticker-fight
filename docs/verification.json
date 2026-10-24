@@ -1,7 +1,7 @@
 {
   "backend": {
-    "tests": 94,
-    "assertions": 788,
+    "tests": 97,
+    "assertions": 808,
     "passed": true
   },
   "browser": {
@@ -401,8 +401,8 @@
     ],
     "orders_created": 0,
     "cart_items_created": 0,
-    "local_php_upload_max_filesize": "12M",
-    "local_php_post_max_size": "16M",
+    "local_php_upload_max_filesize": "14M",
+    "local_php_post_max_size": "18M",
     "local_php_memory_limit": "512M",
     "errors": []
   },
@@ -460,5 +460,57 @@
         "errors": []
       }
     ]
+  },
+  "mobile_editor": {
+    "maximum_upload_mb": 14,
+    "php_tests_added": 3,
+    "php_assertions_added": 20,
+    "full_image_placement_by_default": true,
+    "original_image_dimensions_preserved": true,
+    "explicit_fill_and_center_controls": true,
+    "live_slider_and_drag_without_image_reload": true,
+    "real_chromium_touch_drag_and_pinch": true,
+    "continuous_slider_single_undo": true,
+    "size_limits_enforced_client_and_server": true,
+    "widths_px": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "local_editor_http_status": 200,
+    "browser_results": [
+      {
+        "browser": "chromium",
+        "upload": "passed",
+        "real14MbUpload": "passed",
+        "wholeImageDefault": "passed",
+        "imageControlsAndUndo": "passed",
+        "mobileWidths": "passed",
+        "privateAsset": "passed",
+        "languageBothDirections": "passed",
+        "draftPreserved": "passed",
+        "unchangedSaveIsIdempotent": "passed",
+        "failedSaveBlocksNavigation": "passed",
+        "errors": []
+      },
+      {
+        "browser": "webkit",
+        "upload": "passed",
+        "real14MbUpload": "passed",
+        "wholeImageDefault": "passed",
+        "imageControlsAndUndo": "passed",
+        "mobileWidths": "passed",
+        "privateAsset": "passed",
+        "languageBothDirections": "passed",
+        "draftPreserved": "passed",
+        "unchangedSaveIsIdempotent": "passed",
+        "failedSaveBlocksNavigation": "passed",
+        "errors": []
+      }
+    ],
+    "full_order_and_export_qa_passed": true,
+    "physical_phone_and_instagram_manual_checks_pending": true
   }
 }

@@ -23,8 +23,8 @@ mkdir -p .runtime
 LOCAL_PHP_INI_DIR="$PROJECT_ROOT/.runtime/php"
 mkdir -p "$LOCAL_PHP_INI_DIR"
 cat > "$LOCAL_PHP_INI_DIR/99-sticker-local.ini" <<'PHPINI'
-upload_max_filesize=12M
-post_max_size=16M
+upload_max_filesize=14M
+post_max_size=18M
 memory_limit=512M
 PHPINI
 export PHP_INI_SCAN_DIR="${PHP_INI_SCAN_DIR:-}:$LOCAL_PHP_INI_DIR"

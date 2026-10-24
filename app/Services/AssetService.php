@@ -12,8 +12,8 @@ class AssetService
 {
     public function upload(UploadedFile $file): Asset
     {
-        if ($file->getSize() > 12 * 1024 * 1024) {
-            throw ValidationException::withMessages(['file' => 'الحد الأعلى للصورة 12 ميغابايت.']);
+        if ($file->getSize() > config('sticker.max_upload_mb') * 1024 * 1024) {
+            throw ValidationException::withMessages(['file' => 'الحد الأعلى للصورة 14 ميغابايت.']);
         }
         $info = @getimagesize($file->getRealPath());
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($file->getRealPath());

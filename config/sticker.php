@@ -10,7 +10,7 @@ return [
     'node' => env('NODE_BINARY', 'node'),
     'chromium' => env('CHROMIUM_EXECUTABLE'),
     'ppi' => (int) env('EXPORT_PPI', 300),
-    'max_upload_mb' => 12,
+    'max_upload_mb' => 14,
     'max_pixels' => 32000000,
     'retention_days' => (int) env('DESIGN_RETENTION_DAYS', 90),
     'order_retention_days' => (int) env('ORDER_RETENTION_DAYS', 730),

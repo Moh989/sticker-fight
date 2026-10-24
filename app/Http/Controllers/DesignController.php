@@ -58,7 +58,7 @@ class DesignController extends Controller
 
     public function upload(Request $r, AssetService $service): JsonResponse
     {
-        $r->validate(['file' => 'required|file|max:12288', 'rights' => 'accepted']);
+        $r->validate(['file' => 'required|file|max:'.(config('sticker.max_upload_mb') * 1024), 'rights' => 'accepted'], ['file.max' => __('الحد الأعلى للصورة 14 ميغابايت.')]);
         $a = $service->upload($r->file('file'));
         $replacements = Asset::where('source', Asset::SOURCE_CATALOG)->where('sha256', $a->sha256)
             ->where(fn ($query) => $query->where('guest_session_id', session('guest_id'))->when(auth()->check(), fn ($owned) => $owned->orWhere('user_id', auth()->id())))->pluck('id');
