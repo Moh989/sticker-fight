@@ -1,7 +1,7 @@
 {
   "backend": {
-    "tests": 112,
-    "assertions": 931,
+    "tests": 123,
+    "assertions": 1015,
     "passed": true
   },
   "browser": {
@@ -609,6 +609,77 @@
         ],
         "allImagesLoaded": true,
         "noHorizontalOverflow": true,
+        "errors": []
+      }
+    ]
+  },
+  "template_choices": {
+    "front_kinds": [
+      "small_chip",
+      "no_chip"
+    ],
+    "legacy_versions_preserved": true,
+    "new_no_chip_physically_approved": false,
+    "backend_regressions": 11,
+    "qa_browser": [
+      {
+        "engine": "chromium",
+        "choices": 2,
+        "savedAndRestored": true,
+        "noChipCutContours": 1,
+        "trimMm": [
+          85.6,
+          53.98
+        ],
+        "orderExportAndZip": true,
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "choices": 2,
+        "savedAndRestored": true,
+        "noChipCutContours": 1,
+        "trimMm": [
+          85.6,
+          53.98
+        ],
+        "orderExportAndZip": true,
+        "errors": []
+      }
+    ],
+    "local_read_only": [
+      {
+        "engine": "chromium",
+        "choices": 2,
+        "noChipAwaitingPrinterApproval": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "choices": 2,
+        "noChipAwaitingPrinterApproval": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
         "errors": []
       }
     ]

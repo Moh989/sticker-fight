@@ -7,14 +7,14 @@
 @endphp
 <form id="ready-product-form" action="/api/products/{{ $product->id }}/cart" method="post"
       data-editing-cart="{{ $cartItem?'1':'0' }}" data-quote-url="/api/products/{{ $product->id }}/quote" data-image-url="{{ $product->preview_image_url }}"
-      data-configured="{{ $printingMaterials->isNotEmpty()&&$templates->isNotEmpty()?'1':'0' }}">
+      data-configured="{{ $printingMaterials->isNotEmpty()&&$templates->contains('approved',true)?'1':'0' }}">
     @csrf
     <input type="hidden" name="request_id" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
     @if($cartItem)<input type="hidden" name="cart_item_id" value="{{ $cartItem->id }}">@endif
     <div class="ready-order-heading" id="order-options"><x-icon name="lock" size="18"/><strong>{{ __('تصميم جاهز ثابت — بدون تعديل على الرسم') }}</strong></div>
     <p class="tool-hint">{{ __('اختار خيارات الطباعة فقط. يُستخدم نفس التصميم لكل جهة مطبوعة.') }}</p>
     @if($printingMaterials->isEmpty())<p class="notice warning">{{ __('لا توجد خامة طباعة متاحة حالياً. الطلب غير متاح لهذا التصميم.') }}</p>@endif
-    @if($templates->isEmpty())<p class="notice warning">{{ __('لا توجد قوالب إنتاج معتمدة حالياً. الطلب غير متاح لهذا التصميم.') }}</p>@endif
+    @unless($templates->contains('approved',true))<p class="notice warning">{{ __('لا توجد قوالب إنتاج معتمدة حالياً. الطلب غير متاح لهذا التصميم.') }}</p>@endunless
     <div class="form-grid">
         <label>{{ __('نوع الستيكر') }}<select name="mode" required>
             @foreach(['single'=>'وجه واحد','double'=>'وجهان مطبوعان','mixed'=>'شفاف + مطبوع'] as $value=>$label)
@@ -37,11 +37,11 @@
     <div class="ready-template-groups">
         @foreach(['front'=>'قالب الأمام','back'=>'قالب الخلف'] as $side=>$label)
             <fieldset data-ready-template-side="{{ $side }}" @if($side==='back') hidden @endif><legend>{{ __($label) }}</legend>
-                <p class="tool-hint">{{ __('اختار الرسمة المطابقة لشكل بطاقتك، بدون رفع صورة بطاقتك المصرفية.') }}</p>
+                <p class="tool-hint">{{ __('اختار الرسمة المطابقة لشكل بطاقتك، بدون رفع صورة بطاقتك المصرفية.') }}</p>@if($side==='front')<p class="tool-hint">{{ __('قالب بدون شريحة للبطاقات الخالية من الشريحة فقط. لا تغطّي شريحة موجودة.') }}</p>@endif
                 @forelse($templates->where('side',$side) as $template)
-                    <label class="template-option"><input type="radio" name="{{ $side }}_template_id" value="{{ $template['id'] }}" @checked(($cartItem?->version->document['sides'][$side]['template_version_id']??null)===$template['id'])>
+                    <label class="template-option"><input type="radio" name="{{ $side }}_template_id" value="{{ $template['id'] }}" @disabled(!$template['approved']) @checked(($cartItem?->version->document['sides'][$side]['template_version_id']??null)===$template['id'])>
                         <span class="mini-template" data-ready-template="{{ json_encode($template,JSON_UNESCAPED_UNICODE) }}"></span>
-                        <span><strong>{{ $template['name'] }}</strong><small>v{{ $template['version'] }} · {{ __('قالب معتمد') }}</small></span>
+                        <span><strong>{{ $template['name'] }}</strong><small>v{{ $template['version'] }} · {{ $template['approved']?__('قالب معتمد'):__('بانتظار اعتماد المطبعة') }}</small></span>
                     </label>
                 @empty<p class="tool-hint">{{ __('لا يوجد قالب معتمد متاح لهذه الجهة حالياً.') }}</p>@endforelse
                 <p class="tool-hint" data-ready-no-compatible hidden>{{ __('لا يوجد قالب متوافق مع هذه الخيارات. جرّب خامة أو تشطيباً أو نوع جهات آخر.') }}</p>

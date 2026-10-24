@@ -31,7 +31,7 @@ erDiagram
 | products, categories, catalog_assets | الكتالوج وصورة العرض والأصل الخاص؛ popularity_count مجموع أحداث الشعبية المثبتة |
 | product_popularity_events | أحداث cart/order دون بيانات عميل، مع source_key فريد يمنع تضخيم العدّاد عند الإعادة؛ تبقى بعد حذف السلة |
 | materials, finishes | التوفر والمواصفات والإضافات |
-| card_templates, template_versions | هندسة وإصدار واعتماد وتوافق لكل جهة |
+| card_templates, template_versions | نوع قالب الأمام small_chip/no_chip، وهندسة وإصدار واعتماد وتوافق لكل جهة؛ الإصدارات المؤرشفة محفوظة |
 | designs, design_versions | مسودة حالية وإصدارات مستقلة للرسم والخيارات والقوالب |
 | assets | PNG خاص مع أبعاد وبصمة ومالك؛ source يميّز upload عن catalog، وقيد فريد للجلسة والبصمة والمصدر |
 | cart_items | مرجع إصدار محدد وكمية؛ قيد يمنع تكرار الإصدار في سلة الضيف |

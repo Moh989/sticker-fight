@@ -22,6 +22,7 @@ use App\Services\Phone;
 use App\Services\PricingService;
 use App\Services\ReadyProductService;
 use App\Services\StoreSettings;
+use App\Services\TemplateCatalog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -89,7 +90,7 @@ class StoreController extends Controller
         }
         $product = null;
 
-        return view('store.editor', ['design' => $design, 'product' => $product, 'productAsset' => $product?->catalogAsset ? app(CatalogService::class)->guestAsset($product->catalogAsset) : null, 'templates' => TemplateVersion::with('template')->orderByDesc('version')->get()->map(fn ($v) => ['id' => $v->id, 'name' => $v->template->name, 'side' => $v->template->side, 'approved' => (bool) $v->approved_at && $v->template->active, 'version' => $v->version, 'geometry' => $v->geometry, 'compatibility' => $v->compatibility]), 'materials' => Material::where('active', true)->get(), 'finishes' => Finish::where('active', true)->get()]);
+        return view('store.editor', ['design' => $design, 'product' => $product, 'productAsset' => $product?->catalogAsset ? app(CatalogService::class)->guestAsset($product->catalogAsset) : null, 'templates' => TemplateCatalog::choices(), 'historicalTemplates' => TemplateVersion::with('template')->whereIn('id', collect($design?->document['sides'] ?? [])->pluck('template_version_id')->filter())->get()->map(fn (TemplateVersion $version): array => TemplateCatalog::describe($version)), 'materials' => Material::where('active', true)->get(), 'finishes' => Finish::where('active', true)->get()]);
     }
 
     public function saved(): View
@@ -163,7 +164,7 @@ class StoreController extends Controller
 
     public function guide(): View
     {
-        return view('store.guide', ['templates' => TemplateVersion::with('template')->get()]);
+        return view('store.guide', ['templates' => TemplateCatalog::versions()]);
     }
 
     public function page(string $slug): View

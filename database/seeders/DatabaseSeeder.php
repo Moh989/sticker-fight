@@ -31,8 +31,8 @@ class DatabaseSeeder extends Seeder
         Material::firstOrCreate(['code' => 'clear-vinyl'], ['name' => 'شفاف غير مطبوع — بانتظار الاعتماد', 'transparent' => true]);
         Finish::firstOrCreate(['name' => 'مطفي']);
         Finish::firstOrCreate(['name' => 'لامع']);
-        foreach ([['شريحة صغيرة — تجريبي', 'front', [['x' => 10, 'y' => 19, 'width' => 11, 'height' => 9, 'radius' => 1.4]]], ['شريحة كبيرة — تجريبي', 'front', [['x' => 10, 'y' => 18, 'width' => 13, 'height' => 12, 'radius' => 1.4]]], ['خلفي مع استثناء الشريط — تجريبي', 'back', [['x' => 0, 'y' => 7, 'width' => 85.6, 'height' => 12, 'radius' => 0]]]] as [$name,$side,$holes]) {
-            $t = CardTemplate::firstOrCreate(['name' => $name], ['side' => $side]);
+        foreach ([['قالب مع شريحة صغيرة', 'front', 'small_chip', [['x' => 10, 'y' => 19, 'width' => 11, 'height' => 9, 'radius' => 1.4]]], ['قالب بدون شريحة', 'front', 'no_chip', []], ['خلفي مع استثناء الشريط — تجريبي', 'back', null, [['x' => 0, 'y' => 7, 'width' => 85.6, 'height' => 12, 'radius' => 0]]]] as [$name,$side,$kind,$holes]) {
+            $t = CardTemplate::firstOrCreate(['side' => $side, 'kind' => $kind], ['name' => $name, 'active' => $side === 'front']);
             TemplateVersion::firstOrCreate(['card_template_id' => $t->id, 'version' => 1], ['geometry' => ['card_width' => 85.6, 'card_height' => 53.98, 'width' => 85.6, 'height' => 53.98, 'radius' => 3.18, 'bleed' => 2, 'safe' => 3, 'holes' => $holes], 'compatibility' => ['modes' => ['single', 'double', 'mixed'], 'material_ids' => Material::pluck('id')->all(), 'finish_ids' => Finish::pluck('id')->all()]]);
         }
         foreach (['بغداد', 'البصرة', 'نينوى', 'أربيل', 'النجف', 'كربلاء', 'السليمانية', 'دهوك', 'كركوك', 'الأنبار', 'بابل', 'ديالى', 'واسط', 'صلاح الدين', 'ذي قار', 'ميسان', 'المثنى', 'القادسية', 'حلبجة'] as $name) {

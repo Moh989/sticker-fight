@@ -613,5 +613,14 @@
     "الجهة الشفافة ستيكر منفصل غير مطبوع. ثبّته حسب قالب جهته، وخلي فتحة الشريحة والشريط المغناطيسي مكشوفين مثل الجهة المطبوعة.": "The clear side is a separate, unprinted skin. Apply it using the template for that side, leaving the chip opening and magnetic stripe exposed.",
     "القالب مو مطابق؟": "Template does not match?",
     "لا تقص فتحة الشريحة بنفسك ولا تثبّت ستيكر غير مطابق. راجع دليل القوالب أو تواصل ويانا حتى نراجع الحالة.": "Do not cut the chip opening yourself or apply a skin that does not fit. Check the template guide or contact us for a review.",
-    "الرسوم للتوضيح ومو قياس فعلي. شكل الفتحات يعتمد على قالب طلبك؛ اتبع تعليمات الخامة المرفقة ويا الطلب.": "Illustrations are not actual size. Cutouts depend on your order template; follow the material instructions supplied with your order."
+    "الرسوم للتوضيح ومو قياس فعلي. شكل الفتحات يعتمد على قالب طلبك؛ اتبع تعليمات الخامة المرفقة ويا الطلب.": "Illustrations are not actual size. Cutouts depend on your order template; follow the material instructions supplied with your order.",
+    "قالب مع شريحة صغيرة": "Template with a small chip",
+    "قالب بدون شريحة": "Template without a chip",
+    "بانتظار اعتماد المطبعة": "Awaiting printer approval",
+    "القالب غير المعتمد متاح للمعاينة والحفظ فقط، والطلب يحتاج اعتماد عينة المطبعة.": "Unapproved templates can be previewed and saved. Ordering requires approval of a physical print sample.",
+    "قالب بدون شريحة للبطاقات الخالية من الشريحة فقط. لا تغطّي شريحة موجودة.": "Use the no-chip template only for cards without a chip. Never cover an existing chip.",
+    "لا يوجد قالب متاح لهذه الجهة حالياً. يمكنك حفظ مسودة ومراجعة المتجر.": "No template is available for this side yet. You can save a draft and contact the store.",
+    "نوع قالب الأمام": "Front template type",
+    "فتحات القالب لا تطابق خيار الشريحة المختار.": "The template openings do not match the selected chip type.",
+    "نوع الشريحة يحتاج قالباً مستقلاً. لا تغيّر نوع قالب موجود.": "A different chip type needs a separate template. Do not change the type of an existing template."
 }

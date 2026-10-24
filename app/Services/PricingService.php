@@ -79,7 +79,7 @@ class PricingService
             if (! $snapshot) {
                 $this->fail('اختر قالباً لكل جهة مطلوبة.');
             }$v = TemplateVersion::with('template')->find($snapshot['id']);
-            if (! $v || ! $v->approved_at || ! $v->template->active) {
+            if (! $v || ! $v->approved_at || ! $v->template->active || ! $v->template->isStorefrontChoice()) {
                 $this->fail('القالب تجريبي أو غير متاح للإنتاج.');
             }$c = $v->compatibility;
             $transparent = $mode === 'mixed' && $side === $options['transparent_side'];

@@ -254,7 +254,7 @@ class AdminController extends Controller
     public function template(Request $r): RedirectResponse
     {
         $this->admin();
-        $d = $r->validate(['name' => 'required|string|max:100', 'side' => 'required|in:front,back', 'template_id' => 'nullable|integer|exists:card_templates,id', 'geometry' => 'required|json|max:10000', 'compatibility' => 'required|json|max:10000', 'sample_reference' => 'nullable|string|max:200', 'physical_approval' => 'nullable|accepted', 'active' => 'nullable|boolean']);
+        $d = $r->validate(['name' => 'required|string|max:100', 'side' => 'required|in:front,back', 'kind' => 'required_if:side,front|nullable|in:small_chip,no_chip', 'template_id' => 'nullable|integer|exists:card_templates,id', 'geometry' => 'required|json|max:10000', 'compatibility' => 'required|json|max:10000', 'sample_reference' => 'nullable|string|max:200', 'physical_approval' => 'sometimes|accepted', 'active' => 'nullable|boolean']);
         $g = json_decode($d['geometry'], true);
         $c = json_decode($d['compatibility'], true);
         validator($g, ['card_width' => 'required|numeric|between:20,100', 'card_height' => 'required|numeric|between:20,100', 'width' => 'required|numeric|between:20,100', 'height' => 'required|numeric|between:20,100', 'radius' => 'required|numeric|between:0,10', 'bleed' => 'required|numeric|between:0,5', 'safe' => 'required|numeric|between:1,10', 'holes' => 'present|array|max:10', 'holes.*.x' => 'required|numeric|min:0', 'holes.*.y' => 'required|numeric|min:0', 'holes.*.width' => 'required|numeric|min:0.1', 'holes.*.height' => 'required|numeric|min:0.1', 'holes.*.radius' => 'required|numeric|between:0,5'])->validate();
@@ -265,15 +265,23 @@ class AdminController extends Controller
                 throw ValidationException::withMessages(['geometry' => 'فتحة خارج حدود الستيكر.']);
             }
         }
+        if ($d['side'] === 'front' && (($d['kind'] === 'no_chip' && count($g['holes']) !== 0) || ($d['kind'] === 'small_chip' && count($g['holes']) === 0))) {
+            throw ValidationException::withMessages(['geometry' => __('فتحات القالب لا تطابق خيار الشريحة المختار.')]);
+        }
         validator($c, ['modes' => 'required|array|min:1', 'modes.*' => 'required|in:single,double,mixed', 'material_ids' => 'present|array', 'material_ids.*' => 'required|integer|exists:materials,id', 'finish_ids' => 'present|array', 'finish_ids.*' => 'required|integer|exists:finishes,id'])->validate();
         if ($r->boolean('physical_approval') && empty($d['sample_reference'])) {
             throw ValidationException::withMessages(['sample_reference' => 'مرجع عينة الطباعة مطلوب للاعتماد.']);
         }
         DB::transaction(function () use ($d, $g, $c, $r) {
-            $t = empty($d['template_id']) ? CardTemplate::create(['name' => $d['name'], 'side' => $d['side'], 'active' => $r->boolean('active')]) : CardTemplate::whereKey($d['template_id'])->lockForUpdate()->firstOrFail();
+            $kind = $d['side'] === 'front' ? $d['kind'] : null;
+            $t = empty($d['template_id']) ? CardTemplate::create(['name' => $d['name'], 'side' => $d['side'], 'kind' => $kind, 'active' => $r->boolean('active')]) : CardTemplate::whereKey($d['template_id'])->lockForUpdate()->firstOrFail();
             if ($t->side !== $d['side']) {
                 throw ValidationException::withMessages(['side' => 'أنشئ قالباً مستقلاً للجهة الأخرى.']);
-            }$v = TemplateVersion::create(['card_template_id' => $t->id, 'version' => ($t->versions()->max('version') ?? 0) + 1, 'geometry' => $g, 'compatibility' => $c, 'approved_at' => $r->boolean('physical_approval') ? now() : null, 'approved_by' => $r->boolean('physical_approval') ? auth()->id() : null, 'sample_reference' => $d['sample_reference'] ?? null]);
+            }
+            if ($t->kind !== $kind) {
+                throw ValidationException::withMessages(['kind' => __('نوع الشريحة يحتاج قالباً مستقلاً. لا تغيّر نوع قالب موجود.')]);
+            }
+            $v = TemplateVersion::create(['card_template_id' => $t->id, 'version' => ($t->versions()->max('version') ?? 0) + 1, 'geometry' => $g, 'compatibility' => $c, 'approved_at' => $r->boolean('physical_approval') ? now() : null, 'approved_by' => $r->boolean('physical_approval') ? auth()->id() : null, 'sample_reference' => $d['sample_reference'] ?? null]);
             $t->update(['active' => $r->boolean('active')]);
             $this->log('template.version_created', 'TemplateVersion', $v->id, ['sample_reference' => $v->sample_reference]);
         });

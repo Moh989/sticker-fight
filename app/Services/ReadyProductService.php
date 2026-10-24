@@ -9,7 +9,6 @@ use App\Models\Finish;
 use App\Models\GuestSession;
 use App\Models\Material;
 use App\Models\Product;
-use App\Models\TemplateVersion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -22,9 +21,7 @@ class ReadyProductService
     public function choices(): array
     {
         return [
-            'templates' => TemplateVersion::with('template')->whereNotNull('approved_at')->whereHas('template', fn ($query) => $query->where('active', true))->orderByDesc('version')->get()->map(fn ($version) => [
-                'id' => $version->id, 'name' => $version->template->name, 'side' => $version->template->side, 'version' => $version->version, 'geometry' => $version->geometry, 'compatibility' => $version->compatibility,
-            ]),
+            'templates' => TemplateCatalog::choices(),
             'materials' => Material::where('active', true)->orderBy('surcharge_iqd')->orderBy('id')->get(),
             'finishes' => Finish::where('active', true)->orderBy('surcharge_iqd')->orderBy('id')->get(),
         ];
