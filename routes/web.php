@@ -7,7 +7,13 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ReadyProductController;
 use App\Http\Controllers\StoreController;
+use App\Http\Middleware\GuestIdentity;
+use App\Http\Middleware\StartStoreSession;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 Route::get('/language/{locale}', LocaleController::class)->name('locale.switch');
 Route::get('/', [StoreController::class, 'home'])->name('home');
@@ -22,7 +28,10 @@ Route::get('/orders/{order}/art/{key}', [StoreController::class, 'orderArt']);
 Route::get('/orders/{order}', [StoreController::class, 'order'])->middleware('throttle:sf-tracking');
 Route::get('/track', [StoreController::class, 'track']);
 Route::get('/guide', [StoreController::class, 'guide']);
-Route::get('/catalog/{asset}', [StoreController::class, 'catalog']);
+Route::get('/catalog/{asset}', [StoreController::class, 'catalog'])->withoutMiddleware([
+    EncryptCookies::class, AddQueuedCookiesToResponse::class, StartStoreSession::class,
+    ShareErrorsFromSession::class, PreventRequestForgery::class, GuestIdentity::class,
+]);
 Route::get('/media/{asset}', [StoreController::class, 'media']);
 Route::get('/restore/{token}', [DesignController::class, 'restore'])->middleware('throttle:sf-restore');
 Route::get('/sitemap.xml', [StoreController::class, 'sitemap']);

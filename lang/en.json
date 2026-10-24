@@ -541,5 +541,12 @@
     "البحث في التصاميم": "Search designs",
     "ترتيب التصاميم": "Sort designs",
     "معتمد ومتاح": "Approved and available",
-    "تجريبي — غير متاح للطلب": "Experimental — not available to order"
+    "تجريبي — غير متاح للطلب": "Experimental — not available to order",
+    "تغيّرت جلسة الزائر. افتح المحرر من جديد لمساحتك الحالية. هذا التصميم لم يُنقل إلى الجلسة الجديدة.": "Your guest session changed. Reopen the editor for your current workspace. This design was not transferred to the new session.",
+    "مساحة زائر جديدة": "New visitor workspace",
+    "جهاز مشترك؟ ابدأ مساحة مستقلة للزائر الجديد.": "Shared device? Start a separate workspace for the next visitor.",
+    "استعادة مسودتي بهذه الزيارة": "Restore my draft from this visit",
+    "انتظر اكتمال رفع الصورة قبل بدء مساحة جديدة.": "Wait for the image upload to finish before starting a new workspace.",
+    "احفظ التغييرات أو أعد المحاولة قبل بدء مساحة جديدة.": "Save your changes or retry before starting a new workspace.",
+    "بدأت مساحة زائر جديدة.": "A new visitor workspace has started."
 }

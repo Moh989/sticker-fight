@@ -48,6 +48,10 @@ class AuthController extends Controller
         $r->session()->invalidate();
         $r->session()->regenerateToken();
 
+        if ($r->boolean('new_workspace')) {
+            return redirect('/editor')->with('success', 'بدأت مساحة زائر جديدة.');
+        }
+
         return redirect('/');
     }
 }

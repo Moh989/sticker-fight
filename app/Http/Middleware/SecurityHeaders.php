@@ -14,6 +14,9 @@ class SecurityHeaders
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
         $response->headers->set('Content-Security-Policy', "default-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'");
+        if (str_starts_with((string) $response->headers->get('Content-Type'), 'text/html')) {
+            $response->headers->set('Cache-Control', 'private, no-store');
+        }
         if (($request->is('products/*') && $request->filled('cart')) || $request->is('api/*', 'editor*', 'saved*', 'admin*', 'orders*', 'restore*', 'media*', 'cart*', 'checkout*', 'account*')) {
             $response->headers->set('Cache-Control', 'private, no-store');
             $response->headers->set('X-Robots-Tag', 'noindex, nofollow');

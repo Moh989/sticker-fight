@@ -1075,3 +1075,5 @@ html[data-theme=light] .clear-card{background:#FFFFFF60;border-color:#BEB4C6}
 select:not([multiple]){appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238F8A95' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-size:12px;padding-inline-end:36px}
 html[dir=rtl] select:not([multiple]){background-position:left 13px center}
 html[dir=ltr] select:not([multiple]){background-position:right 13px center}
+
+.guest-workspace-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block-end:18px}.guest-workspace-bar form,.guest-workspace-bar p{margin:0}.guest-workspace-bar .button{min-height:44px}.guest-workspace-bar .text-link{font-size:12px;min-height:44px}

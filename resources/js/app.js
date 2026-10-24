@@ -2,11 +2,13 @@ import './theme.js';
 import {t as translate} from './i18n.js';
 import {materialAvailable,finishAvailable,templateCompatible} from './shared/compatibility.mjs';
 import {renderSide,warnings as designWarnings} from './shared/renderer.mjs';
+window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
 export async function api(url,{method='POST',body}={}){
  const headers={'X-Requested-With':'XMLHttpRequest','Accept':'application/json','X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]')?.content??''};
+ const workspace=document.querySelector('meta[name=guest-workspace]')?.content;if(workspace)headers['X-Guest-Workspace']=workspace;
  if(!(body instanceof FormData))headers['Content-Type']='application/json';
  let response;try{response=await fetch(url,{method,headers,credentials:'same-origin',body:body instanceof FormData?body:JSON.stringify(body)});}catch{const e=new Error(translate('انقطع الاتصال. عملك محفوظ على هذا الجهاز؛ أعد المحاولة.'));e.status=0;throw e;}
- const data=await response.json().catch(()=>({}));if(!response.ok){const message=data.errors?Object.values(data.errors).flat().join(' '):(response.status===419?translate('انتهت صلاحية الجلسة. احفظ نسخة محلية وأعد فتح الصفحة.'):data.message??translate('تعذر إكمال العملية. أعد المحاولة.'));const error=new Error(message);error.status=response.status;throw error;}return data;
+ const data=await response.json().catch(()=>({}));if(!response.ok){const message=data.errors?Object.values(data.errors).flat().join(' '):(response.status===419?translate('انتهت صلاحية الجلسة. احفظ نسخة محلية وأعد فتح الصفحة.'):data.message??translate('تعذر إكمال العملية. أعد المحاولة.'));const error=new Error(message);error.status=response.status;error.code=data.code;throw error;}return data;
 }
 export function toast(text){const el=document.querySelector('#toast');if(!el)return;el.textContent=text;el.hidden=false;clearTimeout(window.stickerToastTimer);window.stickerToastTimer=setTimeout(()=>el.hidden=true,3500);}
 const siteHeader=document.querySelector('[data-site-header]');

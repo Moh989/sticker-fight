@@ -1,7 +1,7 @@
 {
   "backend": {
-    "tests": 87,
-    "assertions": 722,
+    "tests": 94,
+    "assertions": 788,
     "passed": true
   },
   "browser": {
@@ -61,7 +61,7 @@
     "home_status": 200,
     "robots_private_disallows": true
   },
-  "php_syntax_files": 93,
+  "php_syntax_files": 94,
   "release_contains_credentials": false,
   "editor_upload_locale_regression": {
     "engines": [
@@ -421,5 +421,44 @@
     "private_data_excluded": true,
     "staged_secret_findings": 0,
     "physical_print_sample_verified": false
+  },
+  "guest_workspaces": {
+    "passed": true,
+    "backend_tests": 7,
+    "backend_assertions": 66,
+    "local_storage_scoped_to_guest": true,
+    "legacy_unscoped_drafts_ignored": true,
+    "new_editor_has_no_automatic_pending_draft_notice": true,
+    "shared_browser_requires_explicit_new_visitor_button": true,
+    "previous_designs_deleted": false,
+    "stale_tab_transfer_rejected": true,
+    "personal_html_shared_cache_disabled": true,
+    "public_catalog_images_stateless": true,
+    "browsers": [
+      {
+        "engine": "chromium",
+        "anonymousVisitorsIsolated": true,
+        "sharedBrowserNewVisitorButton": true,
+        "newDesignStartsBlank": true,
+        "newSessionIsolated": true,
+        "legacyDraftNotExposed": true,
+        "staleTabCannotTransfer": true,
+        "foreignDesignAndImageRejected": true,
+        "ownOfflineRecoveryPreserved": true,
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "anonymousVisitorsIsolated": true,
+        "sharedBrowserNewVisitorButton": true,
+        "newDesignStartsBlank": true,
+        "newSessionIsolated": true,
+        "legacyDraftNotExposed": true,
+        "staleTabCannotTransfer": true,
+        "foreignDesignAndImageRejected": true,
+        "ownOfflineRecoveryPreserved": true,
+        "errors": []
+      }
+    ]
   }
 }
