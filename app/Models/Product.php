@@ -6,9 +6,12 @@ use App\Services\PricingService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use SoftDeletes;
+
     public const BESTSELLER_THRESHOLD = 10;
 
     protected $table = 'products';
@@ -17,7 +20,7 @@ class Product extends Model
 
     protected function casts(): array
     {
-        return ['active' => 'boolean', 'price_iqd' => 'integer', 'popularity_count' => 'integer'];
+        return ['active' => 'boolean', 'is_featured' => 'boolean', 'price_iqd' => 'integer', 'popularity_count' => 'integer'];
     }
 
     public function scopeBestsellers(Builder $query): Builder

@@ -84,6 +84,23 @@ class ImportCatalogTest extends TestCase
         $this->assertSame([], Storage::disk('local')->allFiles());
     }
 
+    public function test_reimport_does_not_restore_a_deleted_catalog_design(): void
+    {
+        $disk = Storage::fake('catalog-source');
+        Storage::fake('local');
+        $disk->put('Artistic/01_cloud.png', $this->imageBytes(1000, 630));
+        $this->artisan('sticker:catalog-import', ['directory' => $disk->path('')])->assertSuccessful();
+        $product = Product::firstOrFail();
+        $product->delete();
+
+        $this->artisan('sticker:catalog-import', ['directory' => $disk->path('')])->expectsOutput('Created: 0; skipped existing: 1; failed: 0.')->assertSuccessful();
+
+        $this->assertSoftDeleted($product);
+        $this->assertSame(0, Product::count());
+        $this->assertDatabaseCount('products', 1);
+        Storage::disk('local')->assertExists($product->catalogAsset->path);
+    }
+
     public function test_different_images_with_the_same_name_get_distinct_product_urls(): void
     {
         $disk = Storage::fake('catalog-source');

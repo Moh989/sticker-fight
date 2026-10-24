@@ -28,7 +28,7 @@ erDiagram
 | users | حسابات اختيارية وأدوار admin/orders/production/customer |
 | guest_sessions | هوية الضيف وبصمة الاستعادة |
 | customers | بيانات تواصل الطلب، منفصلة عن الحساب الاختياري |
-| products, categories, catalog_assets | الكتالوج وصورة العرض والأصل الخاص؛ popularity_count مجموع أحداث الشعبية المثبتة |
+| products, categories, catalog_assets | الكتالوج وصورة العرض والأصل الخاص؛ is_featured تمييز إداري وdeleted_at حذف محفوظ؛ popularity_count مجموع أحداث الشعبية المثبتة |
 | product_popularity_events | أحداث cart/order دون بيانات عميل، مع source_key فريد يمنع تضخيم العدّاد عند الإعادة؛ تبقى بعد حذف السلة |
 | materials, finishes | التوفر والمواصفات والإضافات |
 | card_templates, template_versions | نوع قالب الأمام small_chip/no_chip، وهندسة وإصدار واعتماد وتوافق لكل جهة؛ الإصدارات المؤرشفة محفوظة |

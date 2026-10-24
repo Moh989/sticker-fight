@@ -82,3 +82,20 @@ if(templateForm){
  templateForm.elements.template_id.addEventListener('change',()=>{const option=templateForm.elements.template_id.selectedOptions[0];if(option.value){templateForm.elements.side.value=option.dataset.side;templateForm.elements.kind.value=option.dataset.kind;templateForm.elements.name.value=option.dataset.name;templateForm.elements.active.checked=option.dataset.active==='1';for(const field of ['geometry','compatibility'])if(option.dataset[field]&&option.dataset[field]!=='null')templateForm.elements[field].value=JSON.stringify(JSON.parse(option.dataset[field]),null,2);}syncTemplateKind();});
  templateForm.elements.kind.addEventListener('change',()=>{if(templateForm.elements.template_id.value||templateForm.elements.kind.value!=='no_chip')return;try{const geometry=JSON.parse(templateForm.elements.geometry.value);geometry.holes=[];templateForm.elements.geometry.value=JSON.stringify(geometry,null,2);}catch{}});syncTemplateKind();
 }
+
+const productArtForm=document.querySelector('[data-product-art-form]');
+if(productArtForm){
+ const fileInput=productArtForm.querySelector('[name=art_file]'),artSelect=productArtForm.querySelector('[name=art_key]'),preview=productArtForm.querySelector('[data-art-preview]'),box=productArtForm.querySelector('[data-art-preview-box]'),errorBox=productArtForm.querySelector('[data-art-preview-error]');let objectUrl=null;
+ const showPreview=url=>{box.hidden=!url;if(url)preview.src=url;else preview.removeAttribute('src');};
+ const resetPreview=()=>showPreview(productArtForm.dataset.catalogPreview||(artSelect.value?'/art/'+encodeURIComponent(artSelect.value)+'.svg':''));
+ fileInput.addEventListener('change',()=>{if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=null;}errorBox.hidden=true;const file=fileInput.files[0];if(!file){resetPreview();return;}let error='';if(!['image/jpeg','image/png','image/webp'].includes(file.type))error=translate('اختار صورة JPG أو PNG أو WebP.');else if(file.size>Number(fileInput.dataset.maxBytes))error=translate('الحد الأعلى للصورة 14 ميغابايت.');if(error){errorBox.textContent=error;errorBox.hidden=false;fileInput.value='';resetPreview();return;}objectUrl=URL.createObjectURL(file);showPreview(objectUrl);});
+ artSelect.addEventListener('change',()=>{if(!fileInput.files.length)resetPreview();});
+ window.addEventListener('pagehide',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);});
+}
+document.querySelectorAll('[data-confirm-delete]').forEach(form=>form.addEventListener('submit',event=>{if(!window.confirm(form.dataset.confirmDelete))event.preventDefault();}));
+const checkoutGuides=document.querySelector('[data-checkout-guides]');
+if(checkoutGuides){
+ const button=checkoutGuides.querySelector('[data-motion-toggle]'),images=[...checkoutGuides.querySelectorAll('img')],paused=checkoutGuides.querySelector('[data-motion-paused]'),reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');let playing=!reduceMotion.matches;
+ const updateMotion=()=>{checkoutGuides.classList.toggle('motion-enabled',playing);for(const image of images)image.hidden=!playing;paused.hidden=playing;button.textContent=translate(playing?'إيقاف الحركة':'عرض الصور المتحركة');button.setAttribute('aria-pressed',String(playing));};
+ button.hidden=false;button.onclick=()=>{playing=!playing;updateMotion();};reduceMotion.addEventListener('change',event=>{if(event.matches){playing=false;updateMotion();}});updateMotion();
+}

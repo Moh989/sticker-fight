@@ -59,7 +59,7 @@ class ImportCatalog extends Command
                     $asset = $newCatalog = null;
                     try {
                         $asset = $uploads->upload(new UploadedFile($file->getPathname(), $file->getFilename(), test: true));
-                        if (Product::whereHas('catalogAsset', fn ($q) => $q->where('sha256', $asset->sha256))->exists()) {
+                        if (Product::withTrashed()->whereHas('catalogAsset', fn ($q) => $q->where('sha256', $asset->sha256))->exists()) {
                             $skipped++;
 
                             continue;
@@ -72,7 +72,7 @@ class ImportCatalog extends Command
                             $category = Category::firstOrCreate(['slug' => $categorySlug], ['name' => $categoryName, 'active' => true]);
                             $key = preg_replace(['/^\d+[_-]/', '/^cc-/', '/-card-cover$/'], '', $file->getFilenameWithoutExtension());
                             $slug = Str::limit($categorySlug.'-'.(Str::slug($key) ?: 'design'), 100, '');
-                            if (Product::where('slug', $slug)->exists()) {
+                            if (Product::withTrashed()->where('slug', $slug)->exists()) {
                                 $slug = Str::limit($slug, 91, '').'-'.substr($asset->sha256, 0, 8);
                             }
                             $name = Str::title(str_replace(['-', '_'], ' ', $key));

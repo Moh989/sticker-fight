@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         foreach ([
             ['afterhours', 'بعد منتصف الليل', 'AFTER HOURS', 'art'], ['baghdad', 'من بغداد، بحب', 'BAGHDAD EDITION', 'iraqi'], ['orbit', 'خارج المدار', 'OUT OF ORBIT', 'art'], ['nope', 'مو اليوم', 'NOPE.', 'quotes'], ['checker', 'خارج المسار', 'OFF GRID', 'cars'], ['bloom', 'مزاج ربيع', 'IN FULL BLOOM', 'art'], ['tiger', 'روح برية', 'WILD STRIPES', 'animals'], ['minimal', 'أقل، بصوت أعلى', 'LESS. BUT LOUDER.', 'minimal'],
         ] as [$art,$name,$description,$category]) {
-            Product::firstOrCreate(['slug' => $art], ['name' => $name, 'description' => $description, 'art_key' => $art, 'category_id' => Category::where('slug', $category)->value('id')]);
+            Product::withTrashed()->firstOrCreate(['slug' => $art], ['name' => $name, 'description' => $description, 'art_key' => $art, 'category_id' => Category::where('slug', $category)->value('id')]);
         }
         Material::firstOrCreate(['code' => 'printed-vinyl'], ['name' => 'خامة مطبوعة — بانتظار الاعتماد', 'notes' => 'فعّل الخامة بعد اختبار المطبعة.']);
         Material::firstOrCreate(['code' => 'clear-vinyl'], ['name' => 'شفاف غير مطبوع — بانتظار الاعتماد', 'transparent' => true]);

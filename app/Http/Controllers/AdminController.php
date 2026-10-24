@@ -12,6 +12,7 @@ use App\Models\Finish;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ProductionFile;
 use App\Models\ReviewRequest;
 use App\Models\TemplateVersion;
@@ -192,6 +193,9 @@ class AdminController extends Controller
         $spec = AdminResources::get($resource);
         $model = $spec['model'];
         $q = $model::query();
+        if ($resource === 'products') {
+            $q->with('category');
+        }
         if ($r->filled('q')) {
             $field = array_key_first($spec['fields']);
             $q->where($field, 'like', '%'.$r->string('q')->limit(100).'%');
@@ -213,7 +217,8 @@ class AdminController extends Controller
         }$data = $r->validate($rules);
         $model = $spec['model'];
         $record = $id ? $model::findOrFail($id) : new $model;
-        if (isset($data['slug']) && $model::where('slug', $data['slug'])->when($id, fn ($q) => $q->whereKeyNot($id))->exists()) {
+        $slugQuery = $resource === 'products' ? $model::withTrashed() : $model::query();
+        if (isset($data['slug']) && $slugQuery->where('slug', $data['slug'])->when($id, fn ($q) => $q->whereKeyNot($id))->exists()) {
             throw ValidationException::withMessages(['slug' => 'الرابط مستخدم.']);
         }if ($resource === 'coupons') {
             if ($data['type'] === 'percent' && $data['value'] > 100) {
@@ -242,6 +247,32 @@ class AdminController extends Controller
         $this->log('resource.saved', $resource, $record->id, $data);
 
         return redirect('/admin/manage/'.$resource.'/'.$record->id)->with('success', 'تم حفظ البيانات.');
+    }
+
+    public function featureProduct(Request $request, Product $product): RedirectResponse
+    {
+        $this->admin();
+        $data = $request->validate(['is_featured' => 'required|boolean']);
+        DB::transaction(function () use ($product, $data): void {
+            $record = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
+            $record->update(['is_featured' => (bool) $data['is_featured']]);
+            $this->log('product.featured_updated', 'products', $record->id, ['is_featured' => $record->is_featured]);
+        });
+
+        return back()->with('success', __('تم تحديث تمييز التصميم.'));
+    }
+
+    public function deleteProduct(Product $product): RedirectResponse
+    {
+        $this->admin();
+        DB::transaction(function () use ($product): void {
+            $record = Product::whereKey($product->id)->lockForUpdate()->firstOrFail();
+            $record->update(['active' => false, 'is_featured' => false]);
+            $record->delete();
+            $this->log('product.deleted', 'products', $record->id, ['name' => $record->name]);
+        });
+
+        return redirect()->route('admin.resources.show', ['resource' => 'products'])->with('success', __('تم حذف التصميم من المتجر. تبقى نسخه في الطلبات السابقة محفوظة.'));
     }
 
     public function templates(): View

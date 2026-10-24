@@ -1,7 +1,7 @@
 {
   "backend": {
-    "tests": 123,
-    "assertions": 1015,
+    "tests": 135,
+    "assertions": 1128,
     "passed": true
   },
   "browser": {
@@ -683,5 +683,106 @@
         "errors": []
       }
     ]
+  },
+  "catalog_management": {
+    "new_backend_cases": 12,
+    "soft_delete_preserves_orders": true,
+    "deleted_slugs_reserved": true,
+    "reimport_preserves_deletion": true,
+    "featuring_independent_of_popularity": true,
+    "checkout_media": {
+      "source": "owner_supplied",
+      "unchanged": true,
+      "sizes": [
+        [
+          480,
+          270
+        ],
+        [
+          338,
+          270
+        ]
+      ],
+      "frames": [
+        81,
+        355
+      ]
+    },
+    "browser": [
+      {
+        "engine": "chromium",
+        "instantUploadPreview": true,
+        "persistedPreview": true,
+        "featureAndUnfeature": true,
+        "deleteCancelAndConfirm": true,
+        "deletedProductCartBlocked": true,
+        "checkoutImages": [
+          480,
+          338
+        ],
+        "animationControl": true,
+        "reducedMotion": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "themes": [
+          "dark",
+          "light"
+        ],
+        "errors": []
+      },
+      {
+        "engine": "webkit",
+        "instantUploadPreview": true,
+        "persistedPreview": true,
+        "featureAndUnfeature": true,
+        "deleteCancelAndConfirm": true,
+        "deletedProductCartBlocked": true,
+        "checkoutImages": [
+          480,
+          338
+        ],
+        "animationControl": true,
+        "reducedMotion": true,
+        "widths": [
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "languages": [
+          "ar",
+          "en"
+        ],
+        "themes": [
+          "dark",
+          "light"
+        ],
+        "errors": []
+      }
+    ],
+    "local_read_only": {
+      "passed": true,
+      "localAdminPreviewsAndButtons": true,
+      "mediaMatchesOriginals": true,
+      "widths": [
+        360,
+        390,
+        768,
+        1024,
+        1440
+      ],
+      "catalogOnlyRead": true,
+      "errors": []
+    }
   }
 }

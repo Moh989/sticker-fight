@@ -21,7 +21,7 @@
             <div id="ready-preview" class="ready-preview" hidden></div>
             <small>{{ __('معاينة للتصميم الثابت. الفتحات تتبع قالب بطاقتك الذي تختاره.') }}</small>
         </div>
-        <div class="detail-copy"><span class="eyebrow">CUSTOM CARD SKINS</span><h1>{{ $product->name }}</h1>@if($product->is_bestseller)<span class="bestseller-badge"><x-icon name="sparkles" size="13"/>{{ __('اكثر مبيعاً') }}</span>@endif @if($hasDistinctDescription)<p dir="ltr" class="latin">{{ $product->description }}</p>@endif
+        <div class="detail-copy"><span class="eyebrow">CUSTOM CARD SKINS</span><h1>{{ $product->name }}</h1>@if($product->is_featured)<span class="featured-badge"><x-icon name="sparkles" size="13"/>{{ __('تصميم مميز') }}</span>@endif @if($product->is_bestseller)<span class="bestseller-badge"><x-icon name="sparkles" size="13"/>{{ __('اكثر مبيعاً') }}</span>@endif @if($hasDistinctDescription)<p dir="ltr" class="latin">{{ $product->description }}</p>@endif
             <p>{{ __('ستيكر جاهز لبطاقتك الموجودة عندك. الرسم ثابت؛ اختار خيارات الطلب وضيفه للسلة.') }}</p>
             @if($basePrice!==null)<div class="detail-price">{{ number_format($basePrice) }} <small>{{ __('د.ع — قبل الإضافات والتوصيل') }}</small></div>@else<p class="notice">{{ __('سعر هذا المنتج غير محدد حالياً.') }}</p>@endif
             <ul class="product-highlights"><li><x-icon name="card" size="18"/>{{ __('ستيكر لبطاقتك الموجودة') }}</li><li><x-icon name="shield" size="18"/>{{ __('لا نطلب بيانات بطاقتك المصرفية.') }}</li>@if(\App\Services\StoreSettings::get('cod_enabled',true))<li><x-icon name="bag" size="18"/>{{ __('الدفع عند الاستلام') }}</li>@endif</ul>

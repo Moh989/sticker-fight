@@ -69,8 +69,10 @@ Route::prefix('admin')->middleware('staff')->group(function () {
     Route::get('/items/{item}/assets/{asset}', [AdminController::class, 'itemAsset']);
     Route::get('/items/{item}/art/{key}', [AdminController::class, 'itemArt']);
     Route::get('/assets/{asset}', [AdminController::class, 'media']);
-    Route::get('/manage/{resource}/{id?}', [AdminController::class, 'resource'])->whereNumber('id');
-    Route::post('/manage/{resource}/{id?}', [AdminController::class, 'saveResource'])->whereNumber('id');
+    Route::get('/manage/{resource}/{id?}', [AdminController::class, 'resource'])->whereNumber('id')->name('admin.resources.show');
+    Route::post('/manage/{resource}/{id?}', [AdminController::class, 'saveResource'])->whereNumber('id')->name('admin.resources.save');
+    Route::post('/products/{product}/feature', [AdminController::class, 'featureProduct'])->name('admin.products.feature');
+    Route::delete('/products/{product}', [AdminController::class, 'deleteProduct'])->name('admin.products.destroy');
     Route::get('/templates', [AdminController::class, 'templates']);
     Route::post('/templates', [AdminController::class, 'template']);
     Route::get('/settings', [AdminController::class, 'settings']);
