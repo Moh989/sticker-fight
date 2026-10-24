@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use App\Models\Asset;
 use App\Models\CartItem;
 use App\Models\CatalogAsset;
@@ -123,7 +122,7 @@ class StoreController extends Controller
             return redirect('/cart');
         }
 
-        return view('store.checkout', ['governorates' => Governorate::where('active', true)->get(), 'areas' => Area::where('active', true)->get()]);
+        return view('store.checkout', ['governorates' => Governorate::where('active', true)->get()]);
     }
 
     public function order(Request $r, Order $order): View

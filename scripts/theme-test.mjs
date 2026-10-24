@@ -92,7 +92,7 @@ for (const [name, engine] of Object.entries({chromium, webkit})) {
         await theme(page, 'dark');
         assert.equal(await page.locator('[data-design-preview]').first().getAttribute('data-design-preview'), cart);
         await page.goto(base + '/checkout');
-        await page.locator('#checkout-governorate').selectOption('1');
+        await page.locator('#checkout-governorate').fill('بغداد');await page.locator('#checkout-district').fill('منطقة اختبار');await page.locator('#checkout-district').press('Tab');
         await page.locator('#place-order:enabled').waitFor();
         const total = await page.locator('#checkout-summary').innerText();
         await theme(page, 'light');

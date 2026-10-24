@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ExportOrderItem;
+use App\Models\Area;
 use App\Models\Asset;
 use App\Models\Bundle;
 use App\Models\CartItem;
@@ -62,18 +63,20 @@ class CheckoutController extends Controller
 
     public function quote(Request $r, PricingService $pricing): JsonResponse
     {
-        $d = $r->validate(['governorate_id' => 'required|integer|exists:governorates,id', 'area_id' => 'nullable|integer|exists:areas,id', 'coupon' => 'nullable|string|max:40']);
+        $d = $r->validate([...$this->locationRules(), 'district' => 'nullable|string|max:100', 'coupon' => 'nullable|string|max:40']);
+        $d = [...$d, ...$this->resolveLocation($d)];
 
         return response()->json($this->totals($pricing, $d['governorate_id'], $d['area_id'] ?? null, $d['coupon'] ?? null)['totals']);
     }
 
     public function store(Request $r, PricingService $pricing): JsonResponse
     {
-        $d = $r->validate(['request_id' => 'required|uuid', 'name' => 'required|string|min:2|max:100', 'phone' => 'required|string|max:30', 'alternate_phone' => 'nullable|string|max:30', 'governorate_id' => 'required|integer|exists:governorates,id', 'area_id' => 'nullable|integer|exists:areas,id', 'city' => 'required|string|max:100', 'district' => 'required|string|max:100', 'address' => 'required|string|min:5|max:500', 'landmark' => 'required|string|max:200', 'notes' => 'nullable|string|max:1000', 'coupon' => 'nullable|string|max:40', 'rights' => 'accepted', 'confirmed' => 'accepted']);
+        $d = $r->validate(['request_id' => 'required|uuid', 'name' => 'required|string|min:2|max:100', 'phone' => 'required|string|max:30', 'alternate_phone' => 'nullable|string|max:30', ...$this->locationRules(), 'city' => 'nullable|string|max:100', 'district' => 'required|string|max:100', 'address' => 'nullable|string|max:500', 'landmark' => 'required|string|max:200', 'notes' => 'nullable|string|max:1000', 'coupon' => 'nullable|string|max:40', 'rights' => 'accepted', 'confirmed' => 'accepted']);
         $existing = Order::where('guest_session_id', session('guest_id'))->where('request_id', $d['request_id'])->first();
         if ($existing) {
             return $this->result($existing);
         }
+        $d = [...$d, ...$this->resolveLocation($d)];
         if (! StoreSettings::get('accepting_orders', false) || ! StoreSettings::get('cod_enabled', true)) {
             throw ValidationException::withMessages(['store' => 'استقبال الطلبات غير مفعّل حالياً. يمكنك حفظ تصميمك والعودة لاحقاً.']);
         }
@@ -126,5 +129,50 @@ class CheckoutController extends Controller
     private function result(Order $order): JsonResponse
     {
         return response()->json(['redirect' => url('/orders/'.$order->id).'?token='.self::token($order), 'number' => $order->number]);
+    }
+
+    /** @return array<string, string> */
+    private function locationRules(): array
+    {
+        return [
+            'governorate' => 'required_without:governorate_id|nullable|string|max:100',
+            'governorate_id' => 'nullable|integer|exists:governorates,id',
+            'area_id' => 'nullable|integer|exists:areas,id',
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array{governorate_id: int, area_id: ?int}
+     */
+    private function resolveLocation(array $data): array
+    {
+        if (empty($data['governorate'])) {
+            return ['governorate_id' => (int) $data['governorate_id'], 'area_id' => $data['area_id'] ?? null];
+        }
+        $name = $this->normalizePlaceName($data['governorate']);
+        $matches = Governorate::where('active', true)->get()->filter(fn (Governorate $governorate): bool => $this->normalizePlaceName($governorate->name) === $name);
+        if ($matches->count() !== 1) {
+            throw ValidationException::withMessages(['governorate' => __('اكتب اسم المحافظة الصحيح حتى نحسب أجرة التوصيل.')]);
+        }
+        $governorate = $matches->first();
+        $district = $this->normalizePlaceName($data['district'] ?? '');
+        $areas = Area::where('governorate_id', $governorate->id)->get()
+            ->filter(fn (Area $area): bool => $this->normalizePlaceName($area->name) === $district);
+        if ($areas->count() > 1) {
+            throw ValidationException::withMessages(['district' => __('اسم المنطقة يحتاج مراجعة من المتجر لحساب التوصيل.')]);
+        }
+
+        return ['governorate_id' => $governorate->id, 'area_id' => $areas->first()?->id];
+    }
+
+    private function normalizePlaceName(string $name): string
+    {
+        $name = strtr(mb_strtolower($name), ['أ' => 'ا', 'إ' => 'ا', 'آ' => 'ا', 'ة' => 'ه', 'ى' => 'ي', 'ی' => 'ي', 'ک' => 'ك']);
+        $name = preg_replace('/[\x{064B}-\x{065F}\x{0670}\x{0640}]/u', '', $name);
+        $name = preg_replace('/^\s*محافظه\s+/u', '', $name);
+        $name = preg_replace('/\s+/u', '', $name);
+
+        return preg_replace('/^ال/u', '', $name);
     }
 }

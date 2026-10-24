@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use App\Jobs\ExportOrderItem;
+use App\Models\Area;
 use App\Models\CardTemplate;
 use App\Models\Coupon;
 use App\Models\Design;
 use App\Models\DesignVersion;
 use App\Models\ExportRun;
 use App\Models\Finish;
+use App\Models\Governorate;
 use App\Models\GuestSession;
 use App\Models\Material;
 use App\Models\Order;
@@ -345,5 +347,119 @@ class CommerceTest extends TestCase
             $this->assertSame('+9647701234567', Phone::normalize($phone));
         }$this->expectException(ValidationException::class);
         Phone::normalize('12345');
+    }
+
+    private function simpleCheckout(array $extra = []): array
+    {
+        return array_merge(['request_id' => (string) Str::uuid(), 'name' => 'زبون اختبار', 'phone' => '07701234567', 'governorate' => 'بغداد', 'district' => 'المنصور', 'landmark' => 'قرب المدخل الرئيسي', 'rights' => true, 'confirmed' => true], $extra);
+    }
+
+    #[TestWith([null])]
+    #[TestWith(['07801234567'])]
+    public function test_simplified_checkout_saves_the_typed_address_without_city_or_street_fields(?string $alternatePhone): void
+    {
+        $this->enable();
+        $this->cart($this->draft($this->data()));
+        $input = $this->simpleCheckout(['alternate_phone' => $alternatePhone]);
+
+        $this->postJson('/api/checkout', $input)->assertOk();
+
+        $order = Order::with('customer')->firstOrFail();
+        $this->assertSame('بغداد', $order->address['governorate']);
+        $this->assertSame('المنصور', $order->address['district']);
+        $this->assertSame('قرب المدخل الرئيسي', $order->address['landmark']);
+        $this->assertArrayNotHasKey('city', $order->address);
+        $this->assertArrayNotHasKey('address', $order->address);
+        $this->assertSame($alternatePhone ? '+9647801234567' : null, $order->customer->alternate_phone);
+        $this->assertSame(12000, $order->totals['total_iqd']);
+        $this->assertDatabaseCount('cart_items', 0);
+        Queue::assertPushed(ExportOrderItem::class);
+        $this->actingAs(User::factory()->create(['role' => 'admin']))->get('/admin/orders/'.$order->id)
+            ->assertOk()->assertSee('المنصور')->assertSee('قرب المدخل الرئيسي');
+    }
+
+    #[TestWith(['name'])]
+    #[TestWith(['phone'])]
+    #[TestWith(['governorate'])]
+    #[TestWith(['district'])]
+    #[TestWith(['landmark'])]
+    #[TestWith(['rights'])]
+    #[TestWith(['confirmed'])]
+    public function test_simplified_checkout_requires_each_contact_and_acknowledgement_field(string $field): void
+    {
+        $input = $this->simpleCheckout();
+        unset($input[$field]);
+
+        $this->postJson('/api/checkout', $input)->assertUnprocessable()->assertJsonValidationErrors($field);
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('customers', 0);
+        Queue::assertNothingPushed();
+    }
+
+    #[TestWith(['rights'])]
+    #[TestWith(['confirmed'])]
+    public function test_checkout_rejects_an_unchecked_acknowledgement(string $field): void
+    {
+        $this->postJson('/api/checkout', $this->simpleCheckout([$field => false]))
+            ->assertUnprocessable()->assertJsonValidationErrors($field);
+
+        $this->assertDatabaseCount('orders', 0);
+        Queue::assertNothingPushed();
+    }
+
+    public function test_typed_location_resolves_its_own_shipping_rate_and_ignores_conflicting_ids(): void
+    {
+        $this->enable();
+        $this->cart($this->draft($this->data()));
+        $governorate = Governorate::where('name', 'البصرة')->firstOrFail();
+        $area = Area::create(['governorate_id' => $governorate->id, 'name' => 'منطقة الاختبار', 'active' => true]);
+        $rate = ShippingRate::create(['governorate_id' => $governorate->id, 'area_id' => $area->id, 'fee_iqd' => 9000, 'active' => true]);
+        $input = $this->simpleCheckout(['governorate' => 'محافظة البصره', 'district' => 'منطقة   الاختبار', 'governorate_id' => 1]);
+
+        $this->postJson('/api/checkout/quote', $input)->assertOk()->assertJsonPath('shipping_iqd', 9000)->assertJsonPath('total_iqd', 16000);
+        $this->postJson('/api/checkout', $input)->assertOk();
+
+        $order = Order::firstOrFail();
+        $this->assertSame($governorate->id, $order->address['governorate_id']);
+        $this->assertSame('البصرة', $order->address['governorate']);
+        $this->assertSame($area->id, $order->address['area_id']);
+        $this->assertSame($rate->id, $order->totals['shipping_rate_id']);
+        $this->assertSame(9000, $order->totals['shipping_iqd']);
+    }
+
+    public function test_unknown_governorate_has_no_quote_or_order(): void
+    {
+        $input = $this->simpleCheckout(['governorate' => 'اسم غير معروف']);
+
+        $this->postJson('/api/checkout/quote', $input)->assertUnprocessable()->assertJsonValidationErrors('governorate');
+        $this->postJson('/api/checkout', $input)->assertUnprocessable()->assertJsonValidationErrors('governorate');
+
+        $this->assertDatabaseCount('orders', 0);
+        Queue::assertNothingPushed();
+    }
+
+    public function test_inactive_typed_region_cannot_fall_back_to_a_general_delivery_fee(): void
+    {
+        $this->enable();
+        $this->cart($this->draft($this->data()));
+        Area::create(['governorate_id' => 1, 'name' => 'منطقة غير متاحة', 'active' => false]);
+
+        $this->postJson('/api/checkout/quote', $this->simpleCheckout(['district' => 'منطقة غير متاحة']))
+            ->assertUnprocessable()->assertJsonValidationErrors('availability');
+
+        $this->assertDatabaseCount('orders', 0);
+    }
+
+    public function test_checkout_form_only_requests_the_six_contact_and_delivery_fields(): void
+    {
+        $this->enable();
+        $this->cart($this->draft($this->data()));
+
+        $this->get('/checkout')->assertOk()->assertSee('name="governorate"', false)
+            ->assertSee('name="district"', false)->assertSee('name="landmark"', false)
+            ->assertDontSee('name="city"', false)->assertDontSee('name="address"', false)
+            ->assertDontSee('name="notes"', false)->assertDontSee('name="area_id"', false)
+            ->assertSee('أقر بحقي في استخدام الصور والنصوص في هذا الطلب.');
     }
 }

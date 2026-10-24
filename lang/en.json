@@ -569,5 +569,14 @@
     "معاينة التصميم": "Preview design",
     "أضف صورة ثانية": "Add another image",
     "عن الصور والخصوصية": "Image help and privacy",
-    "الأجزاء خارج حدود البطاقة والفتحات لا تدخل في الطباعة.": "Areas outside the card and its cutouts will not be printed."
+    "الأجزاء خارج حدود البطاقة والفتحات لا تدخل في الطباعة.": "Areas outside the card and its cutouts will not be printed.",
+    "الاسم (إجباري)": "Name (required)",
+    "رقم الهاتف (إجباري)": "Phone number (required)",
+    "المحافظة (إجباري)": "Governorate (required)",
+    "المنطقة (إجباري)": "Area (required)",
+    "أقرب نقطة دالة (إجباري)": "Nearest landmark (required)",
+    "اكتب المحافظة والمنطقة لعرض أجرة التوصيل والإجمالي.": "Enter your governorate and area to see delivery and the total.",
+    "اكتب اسم المحافظة الصحيح حتى نحسب أجرة التوصيل.": "Enter the correct governorate name so we can calculate delivery.",
+    "اسم المنطقة يحتاج مراجعة من المتجر لحساب التوصيل.": "The store needs to review this area name to calculate delivery.",
+    "جارٍ حساب المبلغ...": "Calculating total..."
 }

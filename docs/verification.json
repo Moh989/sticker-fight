@@ -1,7 +1,7 @@
 {
   "backend": {
-    "tests": 97,
-    "assertions": 808,
+    "tests": 112,
+    "assertions": 931,
     "passed": true
   },
   "browser": {
@@ -512,5 +512,37 @@
     ],
     "full_order_and_export_qa_passed": true,
     "physical_phone_and_instagram_manual_checks_pending": true
+  },
+  "simple_checkout": {
+    "contact_and_delivery_fields": [
+      "name",
+      "phone",
+      "alternate_phone",
+      "governorate",
+      "district",
+      "landmark"
+    ],
+    "optional_contact_field": "alternate_phone",
+    "required_acknowledgements": [
+      "rights",
+      "confirmed"
+    ],
+    "typed_governorate_and_region": true,
+    "server_shipping_rate_resolution": true,
+    "legacy_order_address_display_preserved": true,
+    "additional_backend_tests": 15,
+    "additional_backend_assertions": 123,
+    "browser_checks": {
+      "chromium_order_and_admin": true,
+      "webkit_required_fields_and_acknowledgements": true,
+      "widths_px": [
+        360,
+        390,
+        768,
+        1024,
+        1440
+      ],
+      "javascript_errors": 0
+    }
   }
 }

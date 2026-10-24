@@ -1119,7 +1119,7 @@ html[dir=ltr] select:not([multiple]){background-position:right 13px center}
 .editor-step-actions{border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:var(--surface-1);padding:16px 26px;margin-top:0}
 }
 @media(max-width:800px){
-body:has(#editor-app) .announcement,body:has(#editor-app) .site-footer{display:none}
+body:has(#editor-app) .site-footer{display:none}
 #editor-app{padding-bottom:86px}
 #editor-app .container{width:calc(100% - 28px)}
 .editor-heading{padding-block:16px 12px;align-items:center}

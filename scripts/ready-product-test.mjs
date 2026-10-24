@@ -79,8 +79,8 @@ for (const [name, engine] of Object.entries({chromium, webkit})) {
         await page.setViewportSize({width: 390, height: 844});
         if (name === 'chromium') {
             await page.goto(base + '/checkout');
-            for (const [field, value] of Object.entries({name: 'QA fixed design', phone: '07701234567', city: 'QA', district: 'QA', address: 'QA TEST ADDRESS', landmark: 'QA'})) await page.locator(`[name="${field}"]`).fill(value);
-            await page.locator('#checkout-governorate').selectOption('1');
+            for (const [field, value] of Object.entries({name: 'QA fixed design', phone: '07701234567', district: 'QA', landmark: 'QA'})) await page.locator(`[name="${field}"]`).fill(value);
+            await page.locator('#checkout-governorate').fill('بغداد');await page.locator('#checkout-governorate').press('Tab');
             await page.locator('[name="rights"]').check();
             await page.locator('[name="confirmed"]').check();
             await page.locator('#place-order:enabled').waitFor();
