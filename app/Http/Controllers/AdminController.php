@@ -262,8 +262,9 @@ class AdminController extends Controller
         }
         if ($resource === 'shipping' && ! empty($data['area_id']) && Area::find($data['area_id'])->governorate_id != (int) $data['governorate_id']) {
             throw ValidationException::withMessages(['area_id' => 'المنطقة لا تتبع المحافظة المختارة.']);
+        }if ($resource === 'products') {
+            $r->validate(['art_file' => 'nullable|file|max:'.(config('sticker.max_catalog_upload_mb') * 1024)], ['art_file.max' => __('الحد الأعلى لصورة الكتالوج 4 ميغابايت.'), 'art_file.uploaded' => __('تعذر رفع صورة التصميم. أعد المحاولة بملف حتى 4 ميغابايت.')]);
         }if ($resource === 'products' && $r->hasFile('art_file')) {
-            $r->validate(['art_file' => 'required|file|max:'.(config('sticker.max_upload_mb') * 1024)], ['art_file.max' => __('الحد الأعلى للصورة 14 ميغابايت.')]);
             $asset = app(AssetService::class)->upload($r->file('art_file'));
             $catalog = app(CatalogService::class)->publish($asset);
             $data['catalog_asset_id'] = $catalog->id;

@@ -19,7 +19,9 @@ cd /Users/photoshop/stickers
 
 النسخة التي تم فحصها: PHP 8.5.7، Laravel 13.38.0، MySQL 9.7.1، Node 24.16.0. الإصدارات الدقيقة لباقي الاعتماديات في `composer.lock` و`package-lock.json`. استخدم إصدارات PHP وMySQL المدعومة على استضافتك، وتحقق من متطلبات ملفات القفل قبل التثبيت. لا تُعتبر نسخة MySQL أخرى مختبرة فعلياً لمجرد توافق صياغة migrations معها.
 
-تحتاج PHP مع PDO MySQL وGD وEXIF وFileinfo وmbstring وintl وDOM وXML وZip وSodium، وComposer، وNode، وChromium الخاص بـPlaywright. إعداد مبدئي للخادم: `upload_max_filesize=14M` و`post_max_size=18M` و`memory_limit=512M`. المعالجة ترفض الصور التي تتجاوز الذاكرة المتاحة. كل صورة حتى 14 MB و32 مليون بكسل، وحتى 30 طبقة لكل جهة.
+تحتاج PHP مع PDO MySQL وGD وEXIF وFileinfo وmbstring وintl وDOM وXML وZip وSodium، وComposer، وNode، وChromium الخاص بـPlaywright. إعداد مبدئي للخادم: `upload_max_filesize=14M` و`post_max_size=18M` و`memory_limit=512M`. المعالجة ترفض الصور التي تتجاوز الذاكرة المتاحة. صور الكتالوج المرفوعة من الإدارة حتى 4 MB، وصور محرر الزائر حتى 14 MB؛ كلاهما حتى 32 مليون بكسل، وحتى 30 طبقة لكل جهة. يفرض التطبيق الحدين بصورة مستقلة، ويجب أن يسمح حد PHP العام بصور الزائر الأكبر.
+
+يتضمن `public/.user.ini` إعدادات PHP أعلاه للاستضافات التي تفعّل إعدادات المجلد في CGI/FastCGI؛ قد تحتاج حتى خمس دقائق بعد النشر لتُقرأ. إذا عطلت الاستضافة هذا الملف أو فرضت سقفاً أعلى صلاحية، اضبط القيم من لوحة PHP الخاصة بها. `.htaccess` وملف Nginx النموذجي يمنعان تنزيل ملف الإعداد. راجع [دليل PHP](https://www.php.net/manual/en/configuration.file.per-user.php) لدعم هذا الملف وآلية تحديثه.
 
 1. أنشئ قاعدة MySQL بـ`utf8mb4` ومستخدماً خاصاً محدوداً بقاعدة المتجر.
 2. انسخ `.env.example` إلى `.env` واضبط الاتصال و`APP_URL` وبيئة التشغيل. لا تضع أسراراً في الكود.

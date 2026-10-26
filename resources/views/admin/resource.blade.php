@@ -58,7 +58,7 @@
                     @endif
                 @endforeach
                 @if($resource==='products')
-                    <label>{{ __('رفع تصميم أصلي أو مرخص (اختياري)') }}<input type="file" name="art_file" accept="image/jpeg,image/png,image/webp" data-max-bytes="{{ config('sticker.max_upload_mb')*1024*1024 }}"><small class="muted">{{ __('نسخة عرض محسنة وأصل خاص منفصل للإنتاج.') }}</small></label>
+                    <label>{{ __('رفع تصميم أصلي أو مرخص (اختياري)') }}<input type="file" name="art_file" accept="image/jpeg,image/png,image/webp" data-max-bytes="{{ config('sticker.max_catalog_upload_mb')*1024*1024 }}"><small class="muted">{{ __('JPG · PNG · WebP / حتى 4 MB') }}</small><small class="muted">{{ __('نسخة عرض محسنة وأصل خاص منفصل للإنتاج.') }}</small></label>
                     <figure class="admin-art-preview" data-art-preview-box @unless($record) hidden @endunless>
                         <img data-art-preview @if($record) src="{{ $record->preview_image_url }}" @endif alt="{{ __('معاينة صورة التصميم') }}">
                         <figcaption>{{ __('معاينة الصورة المرفوعة') }}</figcaption>

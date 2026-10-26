@@ -5,6 +5,8 @@
 
     RewriteEngine On
 
+    RewriteRule ^\.user\.ini$ - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

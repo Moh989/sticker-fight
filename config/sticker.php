@@ -11,6 +11,7 @@ return [
     'chromium' => env('CHROMIUM_EXECUTABLE'),
     'ppi' => (int) env('EXPORT_PPI', 300),
     'max_upload_mb' => 14,
+    'max_catalog_upload_mb' => 4,
     'max_pixels' => 32000000,
     'retention_days' => (int) env('DESIGN_RETENTION_DAYS', 90),
     'order_retention_days' => (int) env('ORDER_RETENTION_DAYS', 730),
