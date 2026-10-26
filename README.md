@@ -15,6 +15,23 @@ cd /Users/photoshop/stickers
 
 يضبط سكربت التشغيل حد رفع الصور محلياً على 14 MB وحجم الطلب على 18 MB والذاكرة على 512 MB، دون تعديل إعداد PHP العام للجهاز. أعد تشغيل السكربت بعد تغيير `.env` أو إعدادات PHP المحلية.
 
+## تحديث متجر موجود من GitHub
+
+بعد سحب آخر كود، نفّذ أوامر التحديث التالية في مشروع الاستضافة. هذه الخطوات تحفظ قاعدة المتجر وتصاميمه وإعداداته الحالية، وتضيف الجداول المطلوبة للتحديث:
+
+```sh
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force --no-interaction
+php artisan db:seed --class=ProductSectionSeeder --force --no-interaction
+php artisan db:seed --class=StockItemSeeder --force --no-interaction
+npm ci
+npm run build
+php artisan optimize
+php artisan queue:restart
+```
+
+التصاميم المضافة من لوحة إدارة الموقع موجودة فعلياً بقاعدة الاستضافة وتخزينها الخاص؛ نشر الكود يكمل تحديث البرنامج. أمر `sticker:catalog-install` أدناه يستورد مجموعة المصدر كاملة بتصنيفاتها، ويخص اختيار الاستيراد الكامل أو تثبيتاً جديداً؛ تحديث الكود لا يحتاج تشغيله. احتفظ بقيمة `APP_KEY` الحالية وملف البيئة والتخزين الخاص أثناء التحديث.
+
 ## تثبيت مستقل
 
 النسخة التي تم فحصها: PHP 8.5.7، Laravel 13.38.0، MySQL 9.7.1، Node 24.16.0. الإصدارات الدقيقة لباقي الاعتماديات في `composer.lock` و`package-lock.json`. استخدم إصدارات PHP وMySQL المدعومة على استضافتك، وتحقق من متطلبات ملفات القفل قبل التثبيت. لا تُعتبر نسخة MySQL أخرى مختبرة فعلياً لمجرد توافق صياغة migrations معها.
@@ -57,8 +74,8 @@ php artisan sticker:catalog-import sss --no-interaction
 
 ```sh
 php artisan migrate --force --no-interaction
-php artisan db:seed --class=ProductSectionSeeder --no-interaction
-php artisan db:seed --class=StockItemSeeder --no-interaction
+php artisan db:seed --class=ProductSectionSeeder --force --no-interaction
+php artisan db:seed --class=StockItemSeeder --force --no-interaction
 php -d memory_limit=512M artisan sticker:catalog-install --no-interaction
 php artisan optimize
 php artisan queue:restart
