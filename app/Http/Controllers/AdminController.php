@@ -20,12 +20,14 @@ use App\Models\User;
 use App\Services\AdminResources;
 use App\Services\AssetService;
 use App\Services\CatalogService;
+use App\Services\OrderWorkflow;
 use App\Services\StoreSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -42,8 +44,11 @@ class AdminController extends Controller
         AuditLog::create(['user_id' => auth()->id(), 'action' => $action, 'subject_type' => $type, 'subject_id' => (string) $id, 'changes' => $changes]);
     }
 
-    public function dashboard(): View
+    public function dashboard(): View|RedirectResponse
     {
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('admin.tasks.index');
+        }
         $orders = Order::with('items')->latest()->limit(6)->get();
         $all = Order::all();
 
@@ -53,6 +58,15 @@ class AdminController extends Controller
     public function orders(Request $r): View
     {
         $q = Order::query();
+        $stages = OrderWorkflow::stages();
+        $stage = $r->validate(['stage' => 'nullable|in:orders,production,shipping'])['stage'] ?? null;
+        if ($stage) {
+            abort_unless(auth()->user()->role === 'admin' || auth()->user()->role === $stage, 403);
+            $q->whereIn('status', $stages[$stage]['statuses']);
+        }
+        if (auth()->user()->role === 'shipping') {
+            $q->whereIn('status', ['ready_to_ship', 'shipped', 'delivered', 'returned']);
+        }
         if ($r->filled('q')) {
             $q->where('number', 'like', '%'.$r->string('q')->limit(100).'%');
         }if (array_key_exists($r->input('status', ''), config('sticker.statuses'))) {
@@ -66,9 +80,13 @@ class AdminController extends Controller
 
     public function order(Order $order): View
     {
-        $order->load('items.files', 'customer');
+        abort_unless(OrderWorkflow::canView($order, auth()->user()), 404);
+        $order->load('items.files', 'customer', 'shippingReceiver');
+        $workflowEvents = AuditLog::where('subject_type', 'Order')->where('subject_id', $order->id)
+            ->whereIn('action', ['order.status', 'order.shipping_received', 'production.download_requested'])
+            ->leftJoin('users', 'users.id', '=', 'audit_logs.user_id')->select('audit_logs.*', 'users.name as actor_name')->latest('audit_logs.id')->limit(20)->get();
 
-        return view('admin.order', compact('order'));
+        return view('admin.order', compact('order', 'workflowEvents'));
     }
 
     public function status(Request $r, Order $order): RedirectResponse
@@ -77,12 +95,12 @@ class AdminController extends Controller
         $next = $data['status'];
         $order = DB::transaction(function () use ($order, $next) {
             $order = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
-            $role = auth()->user()->role;
-            $allowed = match ($order->status) {
-                'new' => ['pending_confirmation', 'cancelled'],'pending_confirmation' => ['design_review', 'approved', 'cancelled'],'design_review' => ['pending_confirmation', 'approved', 'cancelled'],'approved' => ['printing', 'design_review', 'cancelled'],'printing' => ['ready_to_ship', 'design_review'],'ready_to_ship' => ['shipped', 'design_review'],'shipped' => ['delivered', 'returned'],'delivered' => ['returned'],'returned' => [],'cancelled' => [],default => []
-            };
-            if (! in_array($next, $allowed) || ($role === 'production' && ! in_array($next, ['printing', 'ready_to_ship', 'design_review'])) || ($role === 'orders' && in_array($next, ['printing', 'ready_to_ship']))) {
+            $allowed = OrderWorkflow::nextStatuses($order, auth()->user());
+            if (! in_array($next, $allowed, true)) {
                 throw ValidationException::withMessages(['status' => 'انتقال الحالة غير متاح لهذا الدور أو لهذه المرحلة.']);
+            }
+            if ($next === 'shipped' && ! $order->shipping_received_at) {
+                throw ValidationException::withMessages(['status' => __('سجّل استلام الطلب الجاهز لدى مسؤول التوصيل أولاً.')]);
             }
             if ($next === 'approved') {
                 foreach ($order->items as $item) {
@@ -96,7 +114,11 @@ class AdminController extends Controller
             if (in_array($next, ['printing', 'ready_to_ship']) && $order->items()->where('export_status', '!=', 'ready')->exists()) {
                 throw ValidationException::withMessages(['status' => 'ملفات الإنتاج لم تجهز بنجاح بعد.']);
             }$old = $order->status;
-            $order->update(['status' => $next]);
+            $changes = ['status' => $next];
+            if ($order->status === 'ready_to_ship' && $next === 'design_review') {
+                $changes += ['shipping_received_at' => null, 'shipping_received_by' => null];
+            }
+            $order->update($changes);
             $this->log('order.status', 'Order', $order->id, ['from' => $old, 'to' => $next]);
             if ($next === 'approved') {
                 foreach ($order->items as $item) {
@@ -153,6 +175,7 @@ class AdminController extends Controller
 
     public function retry(OrderItem $item): RedirectResponse
     {
+        abort_unless(OrderWorkflow::canDownload(auth()->user()), 403);
         abort_if(in_array($item->export_status, ['processing', 'pending', 'expired']), 409);
         $item->update(['export_status' => 'pending']);
         ExportOrderItem::dispatch($item->id);
@@ -163,11 +186,17 @@ class AdminController extends Controller
 
     public function file(ProductionFile $file): StreamedResponse
     {
+        abort_unless(OrderWorkflow::canDownload(auth()->user()), 403);
+        abort_unless(Storage::disk('local')->exists($file->path), 404);
+        $orderId = OrderItem::findOrFail($file->order_item_id)->order_id;
+        $this->log('production.download_requested', 'Order', $orderId, ['file_id' => $file->id, 'kind' => $file->kind, 'side' => $file->side]);
+
         return Storage::disk('local')->download($file->path, basename($file->path), ['Cache-Control' => 'private, no-store']);
     }
 
     public function itemAsset(OrderItem $item, string $asset): BinaryFileResponse
     {
+        abort_if(auth()->user()->role === 'shipping', 403);
         $a = $item->snapshot['assets'][$asset] ?? null;
         abort_unless($a, 404);
 
@@ -176,6 +205,7 @@ class AdminController extends Controller
 
     public function itemArt(OrderItem $item, string $key): BinaryFileResponse
     {
+        abort_if(auth()->user()->role === 'shipping', 403);
         $a = $item->snapshot['art_assets'][$key] ?? null;
         abort_unless($a, 404);
 
@@ -184,6 +214,8 @@ class AdminController extends Controller
 
     public function media(Asset $asset): BinaryFileResponse
     {
+        abort_if(auth()->user()->role === 'shipping', 403);
+
         return response()->file(Storage::disk('local')->path($asset->path), ['Content-Type' => 'image/png', 'Cache-Control' => 'private, no-store']);
     }
 
@@ -194,7 +226,10 @@ class AdminController extends Controller
         $model = $spec['model'];
         $q = $model::query();
         if ($resource === 'products') {
-            $q->with('category');
+            $q->with('category', 'categories', 'section');
+            if ($r->boolean('source_review')) {
+                $q->whereNotNull('catalog_metadata->review_reason');
+            }
         }
         if ($r->filled('q')) {
             $field = array_key_first($spec['fields']);
@@ -353,10 +388,42 @@ class AdminController extends Controller
         return view('admin.users', ['users' => User::latest()->paginate(20)]);
     }
 
+    public function storeUser(Request $request): RedirectResponse
+    {
+        $this->admin();
+        if (is_string($request->input('email'))) {
+            $request->merge(['email' => Str::lower(trim($request->input('email')))]);
+        }
+        $data = $request->validate([
+            'name' => 'required|string|min:2|max:100',
+            'email' => 'required|string|email|max:200|unique:users,email',
+            'password' => ['required', 'string', 'min:12', 'max:72', 'confirmed', function (string $attribute, mixed $value, \Closure $fail): void {
+                if (is_string($value) && config('hashing.driver') === 'bcrypt' && strlen($value) > 72) {
+                    $fail(__('كلمة المرور طويلة جداً. استخدم كلمة أقصر.'));
+                }
+            }],
+            'role' => 'required|in:'.implode(',', array_keys(User::ROLES)),
+        ], [
+            'email.unique' => __('هذا البريد مستخدم مسبقاً. اختر بريداً آخر.'),
+            'password.min' => __('كلمة المرور يجب أن تكون 12 حرفاً على الأقل.'),
+            'password.confirmed' => __('تأكيد كلمة المرور غير مطابق.'),
+        ]);
+        $user = DB::transaction(function () use ($data): User {
+            $user = new User(collect($data)->only(['name', 'email', 'password'])->all());
+            $user->role = $data['role'];
+            $user->save();
+            $this->log('user.created', 'User', (string) $user->id, ['role' => $user->role]);
+
+            return $user;
+        });
+
+        return redirect()->route('admin.users.index')->with('success', __('تمت إضافة المستخدم :name.', ['name' => $user->name]));
+    }
+
     public function user(Request $r, User $user): RedirectResponse
     {
         $this->admin();
-        $d = $r->validate(['role' => 'required|in:admin,orders,production,customer']);
+        $d = $r->validate(['role' => 'required|in:'.implode(',', array_keys(User::ROLES))]);
         if ($user->id === auth()->id() && $d['role'] !== 'admin') {
             throw ValidationException::withMessages(['role' => 'لا يمكنك إزالة صلاحية المدير من حسابك الحالي.']);
         }$user->role = $d['role'];

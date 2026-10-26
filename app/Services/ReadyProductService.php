@@ -29,7 +29,7 @@ class ReadyProductService
 
     public function configuration(Product $product, array $input): array
     {
-        abort_unless($product->active, 404);
+        abort_unless($product->active && $product->product_section_id === null, 404);
         $data = Validator::make($input, [
             'mode' => 'required|in:single,double,mixed', 'printed_side' => 'sometimes|in:front,back', 'transparent_side' => 'sometimes|in:front,back',
             'material_id' => 'nullable|integer|exists:materials,id', 'transparent_material_id' => 'nullable|integer|exists:materials,id', 'finish_id' => 'nullable|integer|exists:finishes,id',

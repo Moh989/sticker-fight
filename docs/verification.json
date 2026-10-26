@@ -1,7 +1,7 @@
 {
   "backend": {
-    "tests": 135,
-    "assertions": 1128,
+    "tests": 257,
+    "assertions": 2013,
     "passed": true
   },
   "browser": {
@@ -784,5 +784,177 @@
       "catalogOnlyRead": true,
       "errors": []
     }
+  },
+  "device_catalog": {
+    "date": "2026-10-25",
+    "passed": true,
+    "sections": 7,
+    "additional_backend_tests": 18,
+    "additional_assertions": 118,
+    "responsive_checks": 160,
+    "admin_responsive_checks": 30,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "quote_flow_verified_in_qa": true,
+    "idempotent_submission": true,
+    "guest_workspace_isolated": true,
+    "card_prices_and_templates_excluded": true,
+    "production_device_templates_approved": false,
+    "primary_database_test_products": 0,
+    "primary_database_test_quote_requests": 0
+  },
+  "accounting_inventory": {
+    "date": "2026-10-25",
+    "passed": true,
+    "new_backend_tests": 36,
+    "new_assertions": 273,
+    "manual_yield_authoritative": true,
+    "weighted_average_stock_cost": true,
+    "integer_milli_precision": true,
+    "idempotent_posting": true,
+    "admin_only": true,
+    "atomic_shortage_rejection": true,
+    "frozen_cost_snapshots": true,
+    "chronological_reversal": true,
+    "qa_purchase_payment_estimate_recipe_production_and_void": true,
+    "responsive_checks": 100,
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "open_details_checked": true,
+    "primary_read_only_pages": 5,
+    "primary_test_financial_records_created": 0,
+    "javascript_errors": []
+  },
+  "team_workflow": {
+    "date": "2026-10-26",
+    "passed": true,
+    "new_backend_tests": 29,
+    "new_assertions": 198,
+    "stages": {
+      "orders": "جواد",
+      "production": "مهند",
+      "shipping": "جعفر"
+    },
+    "shipment_requires_receipt": true,
+    "idempotent_first_receiver": true,
+    "rework_invalidates_receipt": true,
+    "production_download_authorization_and_audit": true,
+    "shipping_customer_data_scope": true,
+    "primary_accounts_created": 0,
+    "primary_roles_modified": false,
+    "primary_order_statuses_modified": false,
+    "browser_responsive_checks": 160,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "errors": []
+  },
+  "admin_user_creation": {
+    "date": "2026-10-26",
+    "passed": true,
+    "new_backend_tests": 22,
+    "new_assertions": 203,
+    "admin_only": true,
+    "five_roles_supported": true,
+    "admin_session_preserved": true,
+    "hashed_passwords": true,
+    "passwords_excluded_from_audit_and_flash": true,
+    "duplicate_email_rejected": true,
+    "new_staff_login_verified": true,
+    "responsive_checks": 40,
+    "read_only_primary_browser_check": true,
+    "primary_test_accounts_created": 0,
+    "errors": []
+  },
+  "licensed_cucu_collection_import": {
+    "date": "2026-10-26",
+    "owner_permission_confirmed": true,
+    "target": "local",
+    "source_products": 2229,
+    "new_products": 2142,
+    "linked_existing": 87,
+    "source_visible": 2222,
+    "source_review_drafts": 7,
+    "failed": 0,
+    "categories_in_manifest": 73,
+    "category_links": 3149,
+    "source_images_downloaded": 2229,
+    "missing_local_files": 0,
+    "idempotent_reimport_skipped": 2229,
+    "idempotent_reimport_created": 0,
+    "additional_backend_tests": 8,
+    "additional_assertions": 60,
+    "browser_engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "browser_responsive_checks": 20,
+    "qa_cart_verified": true,
+    "main_orders_created": 0,
+    "prices_and_popularity_preserved": true,
+    "encrypted_backup_created": true,
+    "errors": []
+  },
+  "github_catalog_delivery": {
+    "date": "2026-10-26",
+    "catalog_products": 2229,
+    "package_bytes": 1916559188,
+    "package_sha256": "c90f146ce46c10032c7ecfea56d06429f2e9ea121f9c8baf70bea6dba300aa18",
+    "release_tag": "catalog-2026-10-26",
+    "installer_tests": 9,
+    "installer_assertions": 32,
+    "real_package_install_verified": true,
+    "real_package_duplicate_products": 0,
+    "composer_validate": true,
+    "composer_advisories": 0,
+    "npm_advisories": 0,
+    "staged_credential_findings": 0,
+    "customer_database_and_private_uploads_excluded": true
   }
 }

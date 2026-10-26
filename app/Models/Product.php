@@ -6,6 +6,7 @@ use App\Services\PricingService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -20,12 +21,27 @@ class Product extends Model
 
     protected function casts(): array
     {
-        return ['active' => 'boolean', 'is_featured' => 'boolean', 'price_iqd' => 'integer', 'popularity_count' => 'integer'];
+        return ['active' => 'boolean', 'is_featured' => 'boolean', 'price_iqd' => 'integer', 'popularity_count' => 'integer', 'catalog_metadata' => 'array'];
     }
 
     public function scopeBestsellers(Builder $query): Builder
     {
         return $query->where('active', true)->where('popularity_count', '>', self::BESTSELLER_THRESHOLD);
+    }
+
+    public function scopeCardSkins(Builder $query): Builder
+    {
+        return $query->whereNull('product_section_id');
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        return $query->where('active', true)->where(fn (Builder $types): Builder => $types->whereNull('product_section_id')->orWhereHas('section', fn (Builder $section): Builder => $section->where('active', true)));
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(ProductSection::class, 'product_section_id');
     }
 
     public function getIsBestsellerAttribute(): bool
@@ -56,5 +72,10 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
     }
 }

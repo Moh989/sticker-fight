@@ -19,5 +19,7 @@
 'settings'=>'M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2',
 'instagram'=>'M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm9 9a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm1-6h.01',
 'user'=>'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-2a8 8 0 0 1 16 0v2','type'=>'M4 4h16M12 4v17M8 21h8',
+'calculator'=>'M5 2h14v20H5V2Zm3 3h8v4H8V5Zm0 8h1m3 0h1m3 0h.01M8 16h1m3 0h1m3 0h.01M8 19h1m3 0h1m3 0h.01',
+'gamepad'=>'M7 7h10a4 4 0 0 1 4 3l2 8a2 2 0 0 1-3 2l-4-3H8l-4 3a2 2 0 0 1-3-2l2-8a4 4 0 0 1 4-3ZM7 10v5m-2-2.5h4M16 11h.01M19 14h.01',
 ]; @endphp
 <svg width="{{ $size }}" height="{{ $size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="{{ $name }}" {{ $attributes }}><path d="{{ $paths[$name]??$paths['sparkles'] }}"/></svg>

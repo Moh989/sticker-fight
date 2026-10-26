@@ -27,7 +27,7 @@ class AuthController extends Controller
         Design::where('guest_session_id', session('guest_id'))->whereNull('user_id')->update(['user_id' => auth()->id()]);
         Asset::where('guest_session_id', session('guest_id'))->whereNull('user_id')->update(['user_id' => auth()->id()]);
 
-        return redirect(in_array(auth()->user()->role, ['admin', 'orders', 'production']) ? '/admin' : '/saved');
+        return redirect(in_array(auth()->user()->role, User::STAFF_ROLES, true) ? '/admin' : '/saved');
     }
 
     public function register(Request $r): RedirectResponse

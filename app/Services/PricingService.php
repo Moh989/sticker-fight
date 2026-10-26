@@ -20,6 +20,9 @@ class PricingService
 
     public function basePrice(string $mode, ?Product $product = null): ?int
     {
+        if ($product?->product_section_id !== null) {
+            return $product->price_iqd;
+        }
         if ($product?->price_iqd === null) {
             $price = StoreSettings::get('price_'.$mode.'_iqd');
 
@@ -44,7 +47,7 @@ class PricingService
         $product = null;
         if (isset($options['product_id'])) {
             $product = Product::find($options['product_id']);
-            if (! $product?->active) {
+            if (! $product?->active || $product->product_section_id !== null) {
                 $this->fail('هذا التصميم غير متاح حالياً.');
             }
         }

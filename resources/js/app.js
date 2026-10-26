@@ -99,3 +99,5 @@ if(checkoutGuides){
  const updateMotion=()=>{checkoutGuides.classList.toggle('motion-enabled',playing);for(const image of images)image.hidden=!playing;paused.hidden=playing;button.textContent=translate(playing?'إيقاف الحركة':'عرض الصور المتحركة');button.setAttribute('aria-pressed',String(playing));};
  button.hidden=false;button.onclick=()=>{playing=!playing;updateMotion();};reduceMotion.addEventListener('change',event=>{if(event.matches){playing=false;updateMotion();}});updateMotion();
 }
+
+if(document.querySelector('[data-cost-form],[data-stock-form],[data-accounting-entry-form]'))import('./accounting.js');

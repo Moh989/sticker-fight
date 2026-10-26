@@ -3,9 +3,10 @@
         <div><h1>{{ $spec['label'] }}</h1><p>{{ __('المعلومات التجارية تظهر للزبون حسب حالة التفعيل والنشر.') }}</p></div>
         <a href="{{ route('admin.resources.show',['resource'=>$resource]) }}" class="button primary small">{{ __('إضافة جديد') }} <x-icon name="plus" size="16"/></a>
     </div>
-    <div class="admin-two-col">
+    @if($resource==='products')<div class="team-heading-actions"><a class="button secondary small" href="{{ route('admin.resources.show',['resource'=>'products','source_review'=>1]) }}">{{ __('صور تحتاج مراجعة') }}</a>@if(request()->boolean('source_review'))<a class="text-link" href="{{ route('admin.resources.show',['resource'=>'products']) }}">{{ __('عرض كل التصاميم') }}</a>@endif</div>@endif
+    @if($resource==='products'&&($record?->catalog_metadata['review_reason']??null))<div class="notice warning">{{ __($record->catalog_metadata['review_reason']) }}</div>@endif<div class="admin-two-col">
         <section>
-            <form method="get" class="catalog-filters"><input name="q" placeholder="{{ __('بحث') }}" value="{{ request('q') }}" aria-label="{{ __('بحث') }}"><button class="button secondary small">{{ __('بحث') }}</button></form>
+            <form method="get" class="catalog-filters">@if(request()->boolean('source_review'))<input type="hidden" name="source_review" value="1">@endif<input name="q" placeholder="{{ __('بحث') }}" value="{{ request('q') }}" aria-label="{{ __('بحث') }}"><button class="button secondary small">{{ __('بحث') }}</button></form>
             <div class="table-scroll">
                 <table @if($resource==='products') class="admin-products-table" @endif>
                     <thead><tr><th>#</th>@if($resource==='products')<th>{{ __('معاينة الصورة') }}</th><th>{{ __('التصميم') }}</th><th>{{ __('السعر / د.ع') }}</th>@else @foreach(array_slice($spec['fields'],0,3) as $key=>$field)<th>{{ __($field[0]) }}</th>@endforeach @endif<th>{{ __('الإجراءات') }}</th></tr></thead>
@@ -15,8 +16,8 @@
                                 <td>{{ $row->id }}</td>
                                 @if($resource==='products')<td><a href="{{ $row->preview_image_url }}" target="_blank" rel="noopener" aria-label="{{ __('معاينة :name',['name'=>$row->name]) }}"><img class="admin-product-thumb" src="{{ $row->preview_image_url }}" alt="{{ $row->name }}" width="86" height="54" loading="lazy"></a></td>@endif
                                 @if($resource==='products')
-                                    <td class="admin-product-name"><a href="{{ route('admin.resources.show',['resource'=>$resource,'id'=>$row->id]) }}">{{ $row->name }}</a><small dir="ltr">{{ $row->slug }}</small>@if($row->category)<small>{{ $row->category->name }}</small>@endif @if($row->is_featured)<span class="featured-badge"><x-icon name="sparkles" size="13"/>{{ __('تصميم مميز') }}</span>@endif</td>
-                                    <td>{{ $row->base_price_iqd===null?__('السعر غير محدد'):number_format($row->base_price_iqd) }}<br><small class="muted">{{ $row->price_iqd===null?__('السعر العام'):__('سعر خاص') }}</small></td>
+                                    <td class="admin-product-name"><a href="{{ route('admin.resources.show',['resource'=>$resource,'id'=>$row->id]) }}">{{ $row->name }}</a><small dir="ltr">{{ $row->slug }}</small><small>{{ $row->section?->name??__('ستيكرات البطاقات') }}</small><small>{{ collect([$row->category?->name])->merge($row->categories->pluck('name'))->filter()->unique()->implode(' · ') }}</small>@if($row->catalog_metadata['review_reason']??null)<span class="badge warn">{{ __('يحتاج مراجعة المصدر') }}</span>@endif @if($row->is_featured)<span class="featured-badge"><x-icon name="sparkles" size="13"/>{{ __('تصميم مميز') }}</span>@endif</td>
+                                    <td>{{ $row->base_price_iqd===null?__('السعر غير محدد'):number_format($row->base_price_iqd) }}<br><small class="muted">{{ $row->product_section_id?__('تسعير القسم'):($row->price_iqd===null?__('السعر العام'):__('سعر خاص')) }}</small></td>
                                 @else
                                     @foreach(array_slice($spec['fields'],0,3) as $key=>$field)<td>{{ is_bool($row->$key)?($row->$key?__('نعم'):__('لا')):$row->$key }}</td>@endforeach
                                 @endif
@@ -45,14 +46,14 @@
                         <label>{{ __($field[0]) }}
                             @if($field[1]==='textarea')<textarea name="{{ $key }}" rows="5">{{ $value }}</textarea>
                             @elseif($field[1]==='material_kind')<select name="{{ $key }}" required><option value="0" @selected(!$value)>{{ __('خامة مطبوعة') }}</option><option value="1" @selected($value)>{{ __('شفاف غير مطبوع') }}</option></select>
-                            @elseif(in_array($field[1],['category','art','governorate','area','coupon_type']))
-                                <select name="{{ $key }}"><option value="">{{ __('اختار') }}</option>
-                                    @php $options=match($field[1]){'category'=>\App\Models\Category::pluck('name','id'),'governorate'=>\App\Models\Governorate::pluck('name','id'),'area'=>\App\Models\Area::pluck('name','id'),'coupon_type'=>collect(['fixed'=>'مبلغ ثابت','percent'=>'نسبة مئوية']),'art'=>collect(\App\Services\DesignValidator::ARTS)->mapWithKeys(fn($s)=>[$s=>$s])}; @endphp
+                            @elseif(in_array($field[1],['category','art','governorate','area','coupon_type','product_section','section_art']))
+                                <select name="{{ $key }}"><option value="">{{ $field[1]==='product_section'?__('ستيكرات البطاقات'):__('اختار') }}</option>
+                                    @php $options=match($field[1]){'product_section'=>\App\Models\ProductSection::orderBy('sort_order')->pluck('name','id'),'section_art'=>collect(\App\Models\ProductSection::ILLUSTRATIONS),'category'=>\App\Models\Category::pluck('name','id'),'governorate'=>\App\Models\Governorate::pluck('name','id'),'area'=>\App\Models\Area::pluck('name','id'),'coupon_type'=>collect(['fixed'=>'مبلغ ثابت','percent'=>'نسبة مئوية']),'art'=>collect(\App\Services\DesignValidator::ARTS)->mapWithKeys(fn($s)=>[$s=>$s])}; @endphp
                                     @foreach($options as $id=>$label)<option value="{{ $id }}" @selected((string)$value===(string)$id)>{{ __($label) }}</option>@endforeach
                                 </select>
                             @else<input name="{{ $key }}" type="{{ $field[1] }}" value="{{ $value }}" @if($field[1]==='number') min="0" step="1" @endif @if(in_array($key,['slug','code','art_key'])) dir="ltr" @endif>
                             @endif
-                            @if($resource==='products'&&$key==='price_iqd')<small class="muted">{{ __('السعر الخاص للوجه الواحد. اتركه فارغاً لاستخدام الأسعار العامة حسب الجهات.') }}</small>@endif
+                            @if($resource==='products'&&$key==='price_iqd')<small class="muted">{{ __('للبطاقات: السعر الخاص للوجه الواحد، والفراغ يستخدم السعر العام. للأجهزة والستيكرات الأخرى: الفراغ يعني التسعير بعد المراجعة، ولا تطبق أسعار البطاقات.') }}</small>@endif
                         </label>
                     @endif
                 @endforeach

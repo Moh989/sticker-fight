@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CatalogRequestController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CostingController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ReadyProductController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\TeamTaskController;
 use App\Http\Middleware\GuestIdentity;
 use App\Http\Middleware\StartStoreSession;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -18,6 +23,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 Route::get('/language/{locale}', LocaleController::class)->name('locale.switch');
 Route::get('/', [StoreController::class, 'home'])->name('home');
 Route::get('/designs', [StoreController::class, 'products'])->name('designs.index');
+Route::get('/devices', [CatalogController::class, 'index'])->name('devices.index');
+Route::get('/devices/{section:slug}', [CatalogController::class, 'section'])->name('devices.section');
+Route::post('/devices/{section:slug}/requests', [CatalogRequestController::class, 'store'])->name('devices.requests.store')->middleware('throttle:sf-review');
 Route::get('/products/{product:slug}', [StoreController::class, 'product'])->name('products.show');
 Route::get('/editor/{design?}', [StoreController::class, 'editor']);
 Route::get('/saved', [StoreController::class, 'saved']);
@@ -56,11 +64,33 @@ Route::prefix('api')->middleware('throttle:sf-api')->group(function () {
 Route::patch('/cart/{item}', [DesignController::class, 'updateCart']);
 Route::delete('/cart/{item}', [DesignController::class, 'removeCart']);
 Route::prefix('admin')->middleware('staff')->group(function () {
+    Route::get('/tasks', [TeamTaskController::class, 'index'])->name('admin.tasks.index');
+    Route::post('/orders/{order}/shipping-receipt', [TeamTaskController::class, 'receiveShipping'])->name('admin.tasks.shipping.receive');
+    Route::prefix('accounting')->name('accounting.')->group(function (): void {
+        Route::get('/', [AccountingController::class, 'index'])->name('index');
+        Route::get('/entries', [AccountingController::class, 'entries'])->name('entries');
+        Route::post('/entries', [AccountingController::class, 'postEntry'])->name('entries.store');
+        Route::post('/entries/{entry}/payments', [AccountingController::class, 'payment'])->name('payments.store');
+        Route::post('/entries/{entry}/void', [AccountingController::class, 'voidEntry'])->name('entries.void');
+        Route::get('/stock', [AccountingController::class, 'stock'])->name('stock');
+        Route::get('/stock/{item}', [AccountingController::class, 'stock'])->name('stock.item');
+        Route::post('/stock/{item?}', [AccountingController::class, 'saveStock'])->name('stock.save');
+        Route::post('/stock/{item}/waste', [AccountingController::class, 'waste'])->name('stock.waste');
+        Route::post('/movements/{movement}/reverse', [AccountingController::class, 'reverseMovement'])->name('stock.reverse');
+        Route::get('/costing', [CostingController::class, 'index'])->name('costing');
+        Route::post('/costing/calculate', [CostingController::class, 'calculate'])->name('costing.calculate');
+        Route::post('/costing/recipes', [CostingController::class, 'saveRecipe'])->name('recipes.save');
+        Route::get('/production', [CostingController::class, 'production'])->name('production');
+        Route::post('/production', [CostingController::class, 'produce'])->name('production.store');
+        Route::post('/production/{run}/void', [CostingController::class, 'voidRun'])->name('production.void');
+    });
+    Route::get('/catalog-requests', [CatalogRequestController::class, 'index'])->name('admin.catalog-requests.index');
+    Route::post('/catalog-requests/{catalogRequest}', [CatalogRequestController::class, 'update'])->name('admin.catalog-requests.update');
     Route::get('/', [AdminController::class, 'dashboard']);
-    Route::get('/orders', [AdminController::class, 'orders']);
+    Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders.index');
     Route::get('/orders/{order}/assets/{asset}', [StoreController::class, 'orderAsset']);
     Route::get('/orders/{order}/art/{key}', [StoreController::class, 'orderArt']);
-    Route::get('/orders/{order}', [AdminController::class, 'order']);
+    Route::get('/orders/{order}', [AdminController::class, 'order'])->name('admin.orders.show');
     Route::post('/orders/{order}/status', [AdminController::class, 'status']);
     Route::post('/orders/{order}/refund', [AdminController::class, 'refund']);
     Route::post('/orders/{order}/payment', [AdminController::class, 'payment']);
@@ -77,8 +107,9 @@ Route::prefix('admin')->middleware('staff')->group(function () {
     Route::post('/templates', [AdminController::class, 'template']);
     Route::get('/settings', [AdminController::class, 'settings']);
     Route::post('/settings', [AdminController::class, 'saveSettings']);
-    Route::get('/users', [AdminController::class, 'users']);
-    Route::post('/users/{user}', [AdminController::class, 'user']);
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+    Route::post('/users/{user}', [AdminController::class, 'user'])->name('admin.users.update');
     Route::get('/logs', [AdminController::class, 'logs']);
     Route::get('/reviews', [AdminController::class, 'reviews']);
     Route::post('/reviews/{review}', [AdminController::class, 'review']);

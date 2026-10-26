@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(ProductSectionSeeder::class);
+        $this->call(StockItemSeeder::class);
         foreach (['عراقي' => 'iraqi', 'عبارات' => 'quotes', 'فن' => 'art', 'ألعاب' => 'gaming', 'سيارات' => 'cars', 'حيوانات' => 'animals', 'بسيط' => 'minimal'] as $name => $slug) {
             Category::firstOrCreate(['slug' => $slug], ['name' => $name]);
         }

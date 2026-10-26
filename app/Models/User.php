@@ -14,6 +14,10 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
+    public const ROLES = ['admin' => 'مدير النظام', 'orders' => 'استلام الطلبات — جواد', 'production' => 'تجهيز الإنتاج — مهند', 'shipping' => 'التوصيل — جعفر', 'customer' => 'زبون'];
+
+    public const STAFF_ROLES = ['admin', 'orders', 'production', 'shipping'];
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 

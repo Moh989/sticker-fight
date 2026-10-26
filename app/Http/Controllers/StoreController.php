@@ -13,6 +13,7 @@ use App\Models\Governorate;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductSection;
 use App\Models\ReviewRequest;
 use App\Models\TemplateVersion;
 use App\Services\CatalogService;
@@ -35,19 +36,19 @@ class StoreController extends Controller
 {
     public function home(): View
     {
-        $best = Product::bestsellers()->orderByDesc('popularity_count')->orderBy('id')->limit(4)->get();
+        $best = Product::cardSkins()->bestsellers()->orderByDesc('popularity_count')->orderBy('id')->limit(4)->get();
 
-        return view('store.home', ['products' => Product::where('active', true)->latest()->limit(4)->get(), 'categories' => Category::where('active', true)->get(), 'best' => $best]);
+        return view('store.home', ['products' => Product::cardSkins()->where('active', true)->latest()->limit(4)->get(), 'categories' => Category::where('active', true)->get(), 'best' => $best, 'deviceSections' => ProductSection::where('active', true)->orderBy('sort_order')->limit(4)->get()]);
     }
 
     public function products(Request $r): View
     {
-        $q = Product::with('category')->where('active', true);
+        $q = Product::cardSkins()->with('category')->where('active', true);
         $generalPrice = StoreSettings::get('price_single_iqd');
         if ($r->filled('q')) {
             $q->where(fn ($b) => $b->where('name', 'like', '%'.$r->string('q')->limit(100).'%')->orWhere('description', 'like', '%'.$r->string('q')->limit(100).'%'));
         }if ($r->filled('category')) {
-            $q->whereHas('category', fn ($b) => $b->where('slug', $r->input('category')));
+            $q->where(fn ($categories) => $categories->whereHas('category', fn ($b) => $b->where('slug', $r->input('category')))->orWhereHas('categories', fn ($b) => $b->where('slug', $r->input('category'))));
         }if ($r->filled('available') && $generalPrice === null) {
             $q->whereNotNull('price_iqd');
         }
@@ -72,6 +73,11 @@ class StoreController extends Controller
     public function product(Request $request, Product $product, ReadyProductService $service): View
     {
         abort_unless($product->active, 404);
+        if ($product->product_section_id !== null) {
+            abort_unless($product->section?->active, 404);
+
+            return view('store.device-product', ['product' => $product, 'section' => $product->section]);
+        }
         $cartItem = $request->filled('cart') ? CartItem::with('version')->whereKey($request->input('cart'))->where('guest_session_id', session('guest_id'))->where('product_id', $product->id)->firstOrFail() : null;
 
         return view('store.product', [...$service->choices(), 'product' => $product, 'cartItem' => $cartItem]);
@@ -186,7 +192,7 @@ class StoreController extends Controller
 
     public function catalog(Request $request, CatalogAsset $asset, CatalogService $catalog): BinaryFileResponse
     {
-        abort_unless(Product::where('active', true)->where('catalog_asset_id', $asset->id)->exists(), 404);
+        abort_unless(Product::publiclyVisible()->where('catalog_asset_id', $asset->id)->exists(), 404);
 
         $path = $request->boolean('preview') ? $catalog->previewPath($asset) : $asset->thumbnail_path;
 
@@ -202,8 +208,11 @@ class StoreController extends Controller
 
     public function sitemap(): Response
     {
-        $urls = ['/', '/designs', '/guide', '/installation', '/faq', '/contact'];
-        foreach (Product::where('active', true)->get() as $product) {
+        $urls = ['/', '/designs', '/devices', '/guide', '/installation', '/faq', '/contact'];
+        foreach (ProductSection::where('active', true)->get() as $section) {
+            $urls[] = '/devices/'.$section->slug;
+        }
+        foreach (Product::publiclyVisible()->get() as $product) {
             $urls[] = '/products/'.$product->slug;
         }
 

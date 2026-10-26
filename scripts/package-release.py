@@ -3,7 +3,7 @@ from pathlib import Path
 import zipfile,hashlib,json
 ROOT=Path(__file__).resolve().parent.parent
 TARGET=ROOT/'deliverables/STICKER-FIGHT-project.zip'
-folders=['app','bootstrap','config','database','lang','resources','routes','tests','public','scripts','docs','samples','sss']
+folders=['app','bootstrap','config','database','lang','resources','routes','tests','public','scripts','docs','samples','sss','qwe']
 files=[]
 for folder in folders:
  for f in (ROOT/folder).rglob('*'):
