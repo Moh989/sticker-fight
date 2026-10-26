@@ -70,6 +70,8 @@ php artisan sticker:catalog-import sss --no-interaction
 
 حزمة مجموعة الكتالوج المرخصة (2,229 تصميماً مع تصنيفاتها) موجودة ضمن [GitHub Release — catalog-2026-10-26](https://github.com/Moh989/sticker-fight/releases/tag/catalog-2026-10-26). حجم ZIP نحو 1.8 GiB، وملف SHA-256 مرفق به. مستودع الكود لا يحتوي قواعد البيانات أو ملفات الزبائن؛ حزمة الإصدار تحتوي صور الكتالوج المرخصة وبيانها فقط.
 
+حزمة [استكمال الصور العشر الكبيرة لمتجر stickerfight.store](https://github.com/Moh989/sticker-fight/releases/download/catalog-2026-10-26/cucu-covers-catalog-pending-2026-10-26.zip) مستقلة عن المجموعة الكاملة، وتستخدم تصنيفات المتجر الموجودة: فن، انمي، عبارات. حجمها نحو 27 MiB وكل صورة فيها أقل من 4 MiB وبأبعاد المصدر. بقيت هذه الصور بانتظار رفع حد PHP على الاستضافة؛ تعديل الحد جاهز مع الكود. يمكن استكمالها من لوحة الإدارة بعد نشر التحديث، أو استخراج الحزمة في التخزين الخاص وتشغيل `php -d memory_limit=512M artisan sticker:catalog-import-licensed /private/path/pending/manifest.json --no-interaction`. ملف البصمة `deliverables/cucu-covers-catalog-pending-2026-10-26.sha256` ومرفق الإصدار يتيحان التحقق منها.
+
 بعد سحب التحديث وبناء الواجهة، شغّل على الاستضافة:
 
 ```sh
