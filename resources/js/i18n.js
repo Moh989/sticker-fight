@@ -1,2 +1,3 @@
-import en from '../../lang/en.json';
-export const t=message=>document.documentElement.lang==='en'?(en[message]??message):message;
+// Arabic is the source language, so only English pages download the dictionary.
+const en = document.documentElement.lang === 'en' ? (await import('../../lang/en.json')).default : {};
+export const t = message => en[message] ?? message;

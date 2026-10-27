@@ -15,7 +15,7 @@ function cookieTheme() {
 function applyTheme(theme, persist = false) {
     const light = theme === 'light';
     root.dataset.theme = light ? 'light' : 'dark';
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#F7F5F8' : '#0A0A0D');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#FFFFFF' : '#1C1B20');
     document.querySelectorAll('[data-theme-toggle]').forEach(button => {
         button.setAttribute('aria-pressed', String(light));
         button.title = translate(light ? 'التحويل إلى النمط الليلي' : 'التحويل إلى النمط النهاري');

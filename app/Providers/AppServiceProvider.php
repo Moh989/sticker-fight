@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('components.pagination');
         View::composer(['components.layout', 'components.admin-layout'], function ($view) {
             $view->with('storeSettings', Setting::all()->pluck('value', 'key')->all());
-            $view->with('appearanceTheme', request()->cookie('sf_theme') === 'light' ? 'light' : 'dark');
+            $view->with('appearanceTheme', request()->cookie('sf_theme') === 'dark' ? 'dark' : 'light');
         });
     }
 }

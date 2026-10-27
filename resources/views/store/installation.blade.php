@@ -12,7 +12,6 @@ $steps = [
 <div class="container page-space installation-page">
     <div class="breadcrumbs"><a href="{{ route('home') }}">{{ __('الرئيسية') }}</a><span>/</span>{{ __('طريقة التركيب') }}</div>
     <header class="page-heading installation-heading">
-        <span class="eyebrow" dir="ltr">A LITTLE CARE GOES A LONG WAY</span>
         <h1>{{ __('خلّيها') }} <span class="pink">{{ __('بمكانها.') }}</span></h1>
         <p>{{ __('من أول طرف لآخر حافة، هاي الصور تمشي وياك خطوة بخطوة حتى تركّب الستيكر بترتيب ووضوح.') }}</p>
         <div class="installation-kit"><span><x-icon name="card" size="18"/>{{ __('بطاقة + ستيكر مطابق') }}</span><span><x-icon name="check" size="18"/>{{ __('سطح نظيف وجاف') }}</span><span><x-icon name="layers" size="18"/>{{ __('قماش ناعم ونظيف') }}</span></div>

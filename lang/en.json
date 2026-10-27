@@ -820,5 +820,20 @@
     "يحتاج مراجعة المصدر": "Source needs review",
     "نسبة الصورة لا تطابق صورة بطاقة كاملة؛ تحتاج مراجعة المصدر قبل التفعيل.": "The image ratio does not match a full card. Review the source before publishing.",
     "المصدر المتاح غطاء جزئي فقط؛ يحتاج الصورة الكاملة قبل التفعيل والطباعة.": "Only a partial cover image is available. A full image is needed before publishing and printing.",
-    "صور تحتاج مراجعة": "Images needing review"
+    "صور تحتاج مراجعة": "Images needing review",
+    "خطوات التصميم": "Design steps",
+    "تكرار العنصر": "Duplicate element",
+    "قفل أو فتح العنصر": "Lock or unlock element",
+    "حذف العنصر": "Delete element",
+    "شي يشبهك...": "Something that feels like you...",
+    "رجوع": "Back",
+    "تراجع": "Undo",
+    "إعادة": "Redo",
+    "نسخ التصميم إلى الجهة الأخرى": "Copy the design to the other side",
+    "نسخ للجهة الأخرى": "Copy to the other side",
+    "معاينة نظيفة": "Clean preview",
+    "مساحة التصميم. استخدم الأسهم لتحريك الطبقة المحددة.": "Design area. Use the arrow keys to move the selected layer.",
+    "ستيكر مطبوع لوجه واحد": "A printed skin for one side",
+    "ملصقان منفصلان مطبوعان": "Two separate printed skins",
+    "وجه شفاف غير مطبوع مع وجه مطبوع": "A clear unprinted side with a printed side"
 }

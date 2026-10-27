@@ -18,12 +18,7 @@ if(menu&&mobileNav){
  const setMenu=open=>{mobileNav.hidden=!open;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',translate(open?'إغلاق القائمة':'فتح القائمة'));};
  menu.onclick=()=>setMenu(mobileNav.hidden);
  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!mobileNav.hidden){setMenu(false);menu.focus();}});
- window.matchMedia('(min-width: 801px)').addEventListener('change',event=>{if(event.matches)setMenu(false);});
-}
-const revealTargets=document.querySelectorAll('[data-reveal]');
-if(revealTargets.length&&'IntersectionObserver' in window&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
- const revealObserver=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){entry.target.classList.add('is-revealed');revealObserver.unobserve(entry.target);}}},{rootMargin:'0px 0px -6% 0px',threshold:.06});
- revealTargets.forEach(element=>{if(element.getBoundingClientRect().top>window.innerHeight*.9){element.classList.add('reveal');revealObserver.observe(element);}});
+ window.matchMedia('(min-width: 1024px)').addEventListener('change',event=>{if(event.matches)setMenu(false);});
 }
 if(document.body.hasAttribute('data-protect-images')){
  document.addEventListener('contextmenu',event=>{if(!(event.target instanceof Element)||!event.target.closest('input,textarea,[contenteditable="true"]'))event.preventDefault();});

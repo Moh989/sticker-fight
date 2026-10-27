@@ -19,24 +19,24 @@ for (const [name, engine] of Object.entries({chromium, webkit})) {
         const errors = [];
         page.on('pageerror', error => errors.push(error.message));
         await page.goto(base);
-        assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
         const target = await page.locator('[data-theme-toggle]').boundingBox();
         assert.ok(target.width >= 44 && target.height >= 44);
         await page.locator('[data-theme-toggle]').tap();
-        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
-        assert.equal(await page.locator('[data-theme-toggle]').getAttribute('aria-pressed'), 'true');
-        assert.equal(await page.evaluate(() => localStorage.getItem('sticker-fight:theme')), 'light');
-        assert.equal((await context.cookies()).find(cookie => cookie.name === 'sf_theme')?.value, 'light');
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+        assert.equal(await page.locator('[data-theme-toggle]').getAttribute('aria-pressed'), 'false');
+        assert.equal(await page.evaluate(() => localStorage.getItem('sticker-fight:theme')), 'dark');
+        assert.equal((await context.cookies()).find(cookie => cookie.name === 'sf_theme')?.value, 'dark');
         const next = await page.goto(base + '/designs');
-        assert.match(await next.text(), /data-theme="light"/);
-        assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'), '#F7F5F8');
+        assert.match(await next.text(), /data-theme="dark"/);
+        assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'), '#1C1B20');
         const peer = await context.newPage();
         await peer.goto(base);
         await page.locator('[data-theme-toggle]').focus();
         await page.locator('[data-theme-toggle]').press('Space');
-        await peer.locator('html[data-theme="dark"]').waitFor();
-        await page.locator('[data-theme-toggle]').press('Enter');
         await peer.locator('html[data-theme="light"]').waitFor();
+        await page.locator('[data-theme-toggle]').press('Enter');
+        await peer.locator('html[data-theme="dark"]').waitFor();
         await peer.close();
 
         for (const width of [360, 390, 768, 1024, 1440]) {
@@ -129,11 +129,11 @@ for (const [name, engine] of Object.entries({chromium, webkit})) {
         await blocked.addInitScript(() => Object.defineProperty(window, 'localStorage', {get() { throw new DOMException('Blocked', 'SecurityError'); }}));
         const fallback = await blocked.newPage();
         await fallback.goto(base);
-        await theme(fallback, 'light');
-        assert.match(await (await fallback.goto(base + '/designs')).text(), /data-theme="light"/);
+        await theme(fallback, 'dark');
+        assert.match(await (await fallback.goto(base + '/designs')).text(), /data-theme="dark"/);
         await blocked.close();
         assert.deepEqual(errors, []);
-        results.push({engine: name, defaultDark: true, touchAndKeyboard: true, persistedBeforePaint: true, crossTabSync: true, storageFallback: true, artworkAndMatUnchanged: true, checkoutTotalUnchanged: true, admin: true, widths: [360, 390, 768, 1024, 1440], languages: ['ar', 'en'], errors});
+        results.push({engine: name, defaultLight: true, touchAndKeyboard: true, persistedBeforePaint: true, crossTabSync: true, storageFallback: true, artworkAndMatUnchanged: true, checkoutTotalUnchanged: true, admin: true, widths: [360, 390, 768, 1024, 1440], languages: ['ar', 'en'], errors});
         await context.close();
     } finally {
         await browser.close();
