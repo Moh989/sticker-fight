@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureSecureUrls;
 use App\Http\Middleware\GuestIdentity;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\StaffOnly;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(EnsureSecureUrls::class);
         $middleware->encryptCookies(except: ['sf_theme']);
         $middleware->web(replace: [StartSession::class => StartStoreSession::class], append: [GuestIdentity::class, SecurityHeaders::class]);
         $middleware->alias(['staff' => StaffOnly::class]);
