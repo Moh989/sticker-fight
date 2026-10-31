@@ -1,0 +1,30 @@
+# Replace server_name, application path and PHP-FPM socket for your server.
+# Configure TLS before enabling production cookies or accepting customer orders.
+server {
+    listen 80;
+    server_name your-domain.example;
+    root /var/www/sticker-fight-newdes/public;
+    index index.php;
+    charset utf-8;
+    client_max_body_size 18m;
+    location / { try_files $uri $uri/ /index.php?$query_string; }
+    location ~ \.php$ {
+        try_files $uri =404;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+    }
+    location ~ /\.(?!well-known).* { deny all; }
+    location ~* \.(woff2|webp|png|svg|css|js)$ {
+        expires 7d;
+        add_header Cache-Control "public, immutable";
+        try_files $uri /index.php?$query_string;
+    }
+    # Avoid logging private recovery/tracking URLs and private asset requests.
+    location ~ ^/(restore|orders|media|admin/(assets|items|files))/ {
+        access_log off;
+        try_files $uri /index.php?$query_string;
+    }
+    error_page 404 /index.php;
+}

@@ -1,0 +1,128 @@
+{
+  "order": "ENGINEERING-SAMPLE",
+  "item": "SAMPLE",
+  "quantity": 1,
+  "color_space": "sRGB",
+  "pdf_standard": "PDF (not PDF/X)",
+  "ppi": 300,
+  "materials": [
+    {
+      "name": "Engineering sample only — clear front; printed back"
+    }
+  ],
+  "finish": null,
+  "finish_applies_to": [
+    "back"
+  ],
+  "template_physical_approval": {
+    "front": {
+      "id": 1,
+      "side": "front",
+      "version": 1,
+      "name": "Engineering sample — not approved",
+      "geometry": {
+        "width": 85.6,
+        "height": 53.98,
+        "radius": 3.18,
+        "bleed": 2,
+        "safe": 3,
+        "holes": [
+          {
+            "x": 10,
+            "y": 19,
+            "width": 11,
+            "height": 9,
+            "radius": 1.4
+          }
+        ]
+      }
+    },
+    "back": {
+      "id": 3,
+      "side": "back",
+      "version": 1,
+      "name": "Engineering sample — not approved",
+      "geometry": {
+        "width": 85.6,
+        "height": 53.98,
+        "radius": 3.18,
+        "bleed": 2,
+        "safe": 3,
+        "holes": [
+          {
+            "x": 0,
+            "y": 7,
+            "width": 85.6,
+            "height": 12,
+            "radius": 0
+          }
+        ]
+      }
+    }
+  },
+  "checks": [
+    {
+      "side": "front",
+      "printed": false,
+      "finish": null,
+      "width_mm": 85.6,
+      "height_mm": 53.98,
+      "bleed_mm": 2,
+      "template_id": 1,
+      "template_version": 1,
+      "orientation": "upright; no automatic mirroring",
+      "warnings": []
+    },
+    {
+      "side": "back",
+      "printed": true,
+      "finish": null,
+      "width_mm": 85.6,
+      "height_mm": 53.98,
+      "bleed_mm": 2,
+      "template_id": 3,
+      "template_version": 1,
+      "orientation": "upright; no automatic mirroring",
+      "warnings": []
+    }
+  ],
+  "files": [
+    {
+      "side": "front",
+      "kind": "preview",
+      "name": "front-preview.png"
+    },
+    {
+      "side": "front",
+      "kind": "cut",
+      "name": "front-cut.svg"
+    },
+    {
+      "side": "back",
+      "kind": "preview",
+      "name": "back-preview.png"
+    },
+    {
+      "side": "back",
+      "kind": "cut",
+      "name": "back-cut.svg"
+    },
+    {
+      "side": "back",
+      "kind": "print_png",
+      "name": "back-print.png"
+    },
+    {
+      "side": "back",
+      "kind": "print_pdf",
+      "name": "back-print.pdf"
+    },
+    {
+      "side": "back",
+      "kind": "artwork",
+      "name": "back-artwork.svg"
+    }
+  ],
+  "approved_for_production": false,
+  "generated_at": "2026-10-27T18:17:17.534Z"
+}

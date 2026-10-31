@@ -1,0 +1,1 @@
+<x-layout :title="$page->title"><article class="container page-space narrow prose"><h1>{{ $page->title }}</h1><div class="body-text">{{ $page->body }}</div></article></x-layout>

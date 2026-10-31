@@ -1,0 +1,1 @@
+<a href="{{ route('home') }}" class="brand" aria-label="Sticker Fight — {{ __('الرئيسية') }}" dir="ltr"><img src="{{ asset('brand/icon.svg').'?v=rose-iraqi' }}" alt="" width="37" height="32"><span><strong>sticker fight<span class="brand-dot">.</span></strong><small dir="{{ app()->getLocale()==='ar'?'rtl':'ltr' }}">{{ __('تفاصيل بروح عراقية') }}</small></span></a>

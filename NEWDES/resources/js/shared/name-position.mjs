@@ -1,0 +1,34 @@
+import {renderSide,fitTextElements} from './renderer.mjs';
+
+export function validNamePosition(x,y,bounds,templates,padding=0){
+ for(const template of templates){const g=template.geometry,safe=g.safe+padding,left=x+bounds.x,top=y+bounds.y,right=left+bounds.width,bottom=top+bounds.height;if(left<safe||top<safe||right>g.width-safe||bottom>g.height-safe)return false;if(g.holes.some(h=>left<h.x+h.width+safe&&right>h.x-safe&&top<h.y+h.height+safe&&bottom>h.y-safe))return false;}return true;
+}
+export function constrainNamePosition(x,y,bounds,templates){
+ const padding=.4,minX=Math.max(...templates.map(t=>t.geometry.safe+padding-bounds.x)),minY=Math.max(...templates.map(t=>t.geometry.safe+padding-bounds.y)),maxX=Math.min(...templates.map(t=>t.geometry.width-t.geometry.safe-padding-bounds.x-bounds.width)),maxY=Math.min(...templates.map(t=>t.geometry.height-t.geometry.safe-padding-bounds.y-bounds.height));
+ if(minX>maxX||minY>maxY)return null;
+ const clampX=value=>Math.min(maxX,Math.max(minX,value)),clampY=value=>Math.min(maxY,Math.max(minY,value)),xs=[clampX(x)],ys=[clampY(y)];
+ for(const template of templates){for(const hole of template.geometry.holes){const safe=template.geometry.safe+padding;xs.push(clampX(hole.x-safe-bounds.x-bounds.width),clampX(hole.x+hole.width+safe-bounds.x));ys.push(clampY(hole.y-safe-bounds.y-bounds.height),clampY(hole.y+hole.height+safe-bounds.y));}}
+ let best=null,distance=Infinity;for(const px of xs){for(const py of ys){if(!validNamePosition(px,py,bounds,templates,padding-.001))continue;const score=(px-x)**2+(py-y)**2;if(score<distance){distance=score;best={x:px,y:py};}}}return best;
+}
+
+export function createNamePositioner({root,inputX,inputY,onStart,onChange,translate}){
+ if(!root)return null;
+ const stage=root.querySelector('[data-name-position-stage]'),status=root.querySelector('[data-name-position-status]'),defaults=JSON.parse(root.dataset.defaultLayout);let model=null,drag=null,revision=0;
+ const point=event=>{const svg=stage.querySelector('svg'),p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());};
+ function selection(valid=true){if(!model)return;const {element:e,bounds:b}=model;stage.querySelector('[data-name-selection]')?.remove();const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');for(const [key,value]of Object.entries({'data-name-selection':'',x:e.x+b.x-.8,y:e.y+b.y-.8,width:b.width+1.6,height:b.height+1.6,rx:.8,fill:'none',stroke:valid?'#AB4E70':'#B23D3D','stroke-width':.35,'stroke-dasharray':'1 .6','pointer-events':'none'}))rect.setAttribute(key,value);stage.querySelector('svg').append(rect);}
+ function move(x,y){if(!model)return false;const location=constrainNamePosition(x,y,model.bounds,model.templates);if(!location)return false;model.element.x=Number(location.x.toFixed(3));model.element.y=Number(location.y.toFixed(3));inputX.value=model.element.x;inputY.value=model.element.y;model.group.setAttribute('transform',`translate(${model.element.x} ${model.element.y})`);selection();status.textContent=translate('راجع مكان الاسم، وبعدين ضيفه للسلة.');return true;}
+ function endDrag(event){if(!drag||event.pointerId!==drag.id)return;drag=null;stage.classList.remove('is-dragging');if(stage.hasPointerCapture(event.pointerId))stage.releasePointerCapture(event.pointerId);onChange();}
+ stage.addEventListener('pointerdown',event=>{if(!model||!event.isPrimary||(event.pointerType==='mouse'&&event.button!==0))return;event.preventDefault();onStart();stage.focus({preventScroll:true});const p=point(event),e=model.element,b=model.bounds,inside=p.x>=e.x+b.x-3&&p.x<=e.x+b.x+b.width+3&&p.y>=e.y+b.y-3&&p.y<=e.y+b.y+b.height+3;if(!inside)move(p.x-b.x-b.width/2,p.y-b.y-b.height/2);drag={id:event.pointerId,x:p.x,y:p.y,startX:e.x,startY:e.y};stage.setPointerCapture(event.pointerId);stage.classList.add('is-dragging');});
+ stage.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.id)return;event.preventDefault();const p=point(event);move(drag.startX+p.x-drag.x,drag.startY+p.y-drag.y);});
+ stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);stage.addEventListener('lostpointercapture',event=>{if(drag?.id===event.pointerId){drag=null;stage.classList.remove('is-dragging');onChange();}});
+ function nudge(dx,dy){if(!model)return;onStart();move(model.element.x+dx,model.element.y+dy);onChange();}
+ stage.addEventListener('keydown',event=>{const directions={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]},direction=directions[event.key];if(!direction)return;event.preventDefault();const step=event.shiftKey?3:.5;nudge(direction[0]*step,direction[1]*step);});
+ root.querySelectorAll('[data-name-nudge]').forEach(button=>button.addEventListener('click',()=>{const [dx,dy]=button.dataset.nameNudge.split(',').map(Number);nudge(dx,dy);}));
+ root.querySelector('[data-name-position-reset]').addEventListener('click',()=>{if(!model)return;onStart();inputX.value='';inputY.value='';model.element.x=defaults.x;model.element.y=defaults.y;model.group.setAttribute('transform',`translate(${defaults.x} ${defaults.y})`);selection();onChange();});
+ return {async update(preview){const localRevision=++revision,options=preview.options,sides=options.mode==='single'?[options.printed_side]:['front','back'].filter(side=>!(options.mode==='mixed'&&options.transparent_side===side)),side=sides[0],document=structuredClone(preview.document.sides[side]),element=document.elements.find(e=>e.id==='ready-name-'+side);if(!element){root.hidden=true;model=null;return;}
+  root.hidden=false;stage.innerHTML=renderSide(document,preview.templates[side],{id:'name-placement',textImages:preview.textImages,resolve:e=>e.type==='art'?`/art/${e.art_key}.svg`:root.dataset.imageUrl});await fitTextElements(stage);if(localRevision!==revision)return;
+  const group=stage.querySelector(`[data-element="${element.id}"]`),text=group.querySelector('text'),box=preview.nameBounds??options.personalization?.bounds??(text?text.getBBox():null);if(!box)return;const bounds={x:box.x,y:box.y,width:box.width,height:box.height},templates=sides.map(s=>preview.templates[s]);model={element,group,bounds,templates};
+  const svg=stage.querySelector('svg'),g=preview.templates[side].geometry,guide=documentSafeRect(g);svg.insertAdjacentHTML('beforeend',guide);selection(options.personalization?.placement_valid!==false);status.textContent=options.personalization?.placement_message??translate('اسحب الاسم بإصبعك، أو اضغط على المكان اللي تريده.');
+ },invalidate(){revision++;}};
+}
+function documentSafeRect(g){return `<rect x="${g.safe}" y="${g.safe}" width="${g.width-g.safe*2}" height="${g.height-g.safe*2}" rx="${Math.max(0,g.radius-g.safe)}" fill="none" stroke="#AB4E70" stroke-opacity=".5" stroke-width=".2" stroke-dasharray="1 1" pointer-events="none" data-name-safe-guide=""/>`;}

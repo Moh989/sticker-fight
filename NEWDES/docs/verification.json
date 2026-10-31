@@ -1,0 +1,55 @@
+{
+  "project": "NEWDES",
+  "date": "2026-10-27",
+  "backend": {
+    "tool": "phpunit",
+    "result": "passed",
+    "tests": 327,
+    "passed": 327,
+    "assertions": 2463,
+    "duration_ms": 7946
+  },
+  "browser": {
+    "passed": true,
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "flows": 5,
+    "responsive_cases": 80,
+    "errors": []
+  },
+  "print": {
+    "passed": true,
+    "template_version": 2,
+    "hole_mm": {
+      "x": 9.1,
+      "y": 18.5,
+      "width": 11,
+      "height": 9,
+      "radius": 1.4
+    },
+    "ppi": 300,
+    "pixel_xy": [
+      196,
+      295
+    ],
+    "rgba": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "png_size": [
+      1058,
+      685
+    ],
+    "dpi": [
+      299.9994,
+      299.9994
+    ]
+  },
+  "physical_print_approval": false,
+  "build": true,
+  "pint": true
+}

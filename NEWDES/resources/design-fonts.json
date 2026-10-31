@@ -1,0 +1,170 @@
+{
+  "Cairo": {
+    "label": "Cairo — كايرو",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "files": [
+      {
+        "file": "cairo-arabic.woff2",
+        "weight": "200 1000",
+        "unicode_range": "U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF"
+      },
+      {
+        "file": "cairo-latin.woff2",
+        "weight": "200 1000"
+      }
+    ]
+  },
+  "thmanyah Sans": {
+    "label": "ثمانية Sans",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "server_rendered": true,
+    "preview_images": {
+      "ar": "/art/name-fonts/thmanyah-sans-ar.png",
+      "en": "/art/name-fonts/thmanyah-sans-en.png"
+    },
+    "files": [
+      {
+        "file": "thmanyahsans-Regular.woff2",
+        "weight": "400"
+      }
+    ]
+  },
+  "thmanyah Serif Display": {
+    "label": "ثمانية للعناوين",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "server_rendered": true,
+    "preview_images": {
+      "ar": "/art/name-fonts/thmanyah-display-ar.png",
+      "en": "/art/name-fonts/thmanyah-display-en.png"
+    },
+    "files": [
+      {
+        "file": "thmanyahserifdisplay-Regular.woff2",
+        "weight": "400"
+      }
+    ]
+  },
+  "thmanyah Serif Text": {
+    "label": "ثمانية للنصوص",
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "server_rendered": true,
+    "preview_images": {
+      "ar": "/art/name-fonts/thmanyah-text-ar.png",
+      "en": "/art/name-fonts/thmanyah-text-en.png"
+    },
+    "files": [
+      {
+        "file": "thmanyahseriftext-Regular.woff2",
+        "weight": "400"
+      }
+    ]
+  },
+  "Tajawal": {
+    "label": "Tajawal — تجوال",
+    "languages": [
+      "ar"
+    ],
+    "files": [
+      {
+        "file": "Tajawal-Regular.ttf",
+        "weight": "400"
+      }
+    ]
+  },
+  "Amiri": {
+    "label": "Amiri — أميري",
+    "languages": [
+      "ar"
+    ],
+    "files": [
+      {
+        "file": "Amiri-Regular.ttf",
+        "weight": "400"
+      }
+    ]
+  },
+  "Lato": {
+    "label": "Lato",
+    "languages": [
+      "en"
+    ],
+    "files": [
+      {
+        "file": "Lato-Regular.ttf",
+        "weight": "400"
+      }
+    ]
+  },
+  "Bebas Neue": {
+    "label": "Bebas Neue",
+    "languages": [
+      "en"
+    ],
+    "files": [
+      {
+        "file": "bebas-neue.woff2",
+        "weight": "400"
+      }
+    ]
+  },
+  "Rakkas": {
+    "label": "Rakkas — رقّاص",
+    "languages": [
+      "ar"
+    ],
+    "files": [
+      {
+        "file": "Rakkas-Regular.ttf",
+        "weight": "400"
+      }
+    ]
+  },
+  "El Messiri": {
+    "label": "El Messiri — المسيري",
+    "languages": [
+      "ar"
+    ],
+    "files": [
+      {
+        "file": "ElMessiri-Variable.ttf",
+        "weight": "400 700"
+      }
+    ]
+  },
+  "Pacifico": {
+    "label": "Pacifico",
+    "languages": [
+      "en"
+    ],
+    "files": [
+      {
+        "file": "Pacifico-Regular.ttf",
+        "weight": "400"
+      }
+    ]
+  },
+  "Playfair Display": {
+    "label": "Playfair Display",
+    "languages": [
+      "en"
+    ],
+    "files": [
+      {
+        "file": "PlayfairDisplay-Variable.ttf",
+        "weight": "400 900"
+      }
+    ]
+  }
+}

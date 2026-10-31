@@ -1,0 +1,111 @@
+{
+  "options": {
+    "mode": "mixed",
+    "printed_side": "back",
+    "transparent_side": "front"
+  },
+  "document": {
+    "version": 1,
+    "sides": {
+      "front": {
+        "background": "#ffffff",
+        "elements": []
+      },
+      "back": {
+        "background": "#23444B",
+        "elements": [
+          {
+            "id": "art-1",
+            "type": "art",
+            "art_key": "afterhours",
+            "x": -2,
+            "y": -2,
+            "width": 89.6,
+            "height": 57.98,
+            "rotation": 0,
+            "fit": "cover",
+            "locked": false
+          },
+          {
+            "id": "text-1",
+            "type": "text",
+            "text": "هذه بطاقتي · MY CARD",
+            "font": "Cairo",
+            "fontSize": 5,
+            "color": "#F7F5F8",
+            "align": "middle",
+            "x": 20,
+            "y": 30,
+            "width": 58,
+            "height": 10,
+            "rotation": 0,
+            "locked": false
+          }
+        ]
+      }
+    }
+  },
+  "templates": {
+    "front": {
+      "id": 1,
+      "side": "front",
+      "version": 1,
+      "name": "Engineering sample — not approved",
+      "geometry": {
+        "width": 85.6,
+        "height": 53.98,
+        "radius": 3.18,
+        "bleed": 2,
+        "safe": 3,
+        "holes": [
+          {
+            "x": 10,
+            "y": 19,
+            "width": 11,
+            "height": 9,
+            "radius": 1.4
+          }
+        ]
+      }
+    },
+    "back": {
+      "id": 3,
+      "side": "back",
+      "version": 1,
+      "name": "Engineering sample — not approved",
+      "geometry": {
+        "width": 85.6,
+        "height": 53.98,
+        "radius": 3.18,
+        "bleed": 2,
+        "safe": 3,
+        "holes": [
+          {
+            "x": 0,
+            "y": 7,
+            "width": 85.6,
+            "height": 12,
+            "radius": 0
+          }
+        ]
+      }
+    }
+  },
+  "assets": {},
+  "print_profile": {
+    "color_space": "sRGB",
+    "ppi": 300,
+    "pdf_standard": "PDF",
+    "icc": null,
+    "white_ink": false,
+    "mirror": false
+  },
+  "materials": [
+    {
+      "name": "Engineering sample only — clear front; printed back"
+    }
+  ],
+  "quantity": 1,
+  "production_approved": false,
+  "art_assets": {}
+}

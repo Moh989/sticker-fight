@@ -1,0 +1,12 @@
+[program:sticker-fight-newdes-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/sticker-fight-newdes/artisan queue:work --sleep=2 --tries=3 --timeout=210 --max-time=3600
+user=www-data
+numprocs=1
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=240
+redirect_stderr=true
+stdout_logfile=/var/www/sticker-fight-newdes/storage/logs/worker.log

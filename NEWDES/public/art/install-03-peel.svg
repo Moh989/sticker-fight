@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768" role="img" aria-labelledby="title desc"><title id="title">Peel a small part of the release liner</title><desc id="desc">A small strip of backing paper folds away while most of the liner remains under the sticker.</desc>
+<defs>
+ <filter id="shadow" x="-25%" y="-25%" width="150%" height="170%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#241E2B" flood-opacity=".16"/></filter>
+ <marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M1 1L10 6 1 11" fill="none" stroke="#AB4E70" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+ <pattern id="weave" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 3H12M3 0V12" stroke="#FFD3E5" stroke-width="2"/></pattern>
+ <mask id="front-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="856" height="540"><rect width="856" height="540" rx="32" fill="white"/><rect x="100" y="178" width="131" height="106" rx="16" fill="black"/></mask>
+ <mask id="back-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="856" height="540"><rect width="856" height="540" rx="32" fill="white"/><rect y="70" width="856" height="120" fill="black"/></mask>
+ <g id="chip"><rect x="108" y="186" width="115" height="90" rx="11" fill="#E2C48C" stroke="#AE8D54" stroke-width="3"/><path d="M145 186V276M186 186V276M108 215H145M108 247H145M186 215H223M186 247H223M145 202H186M145 260H186" stroke="#9D7D45" stroke-width="3" fill="none"/></g>
+ <g id="plain-card"><rect width="856" height="540" rx="32" fill="#36313F"/><rect x="2" y="2" width="852" height="536" rx="30" fill="none" stroke="#5A5262" stroke-width="3"/><use href="#chip"/></g>
+ <g id="artwork"><rect width="856" height="540" fill="#AB4E70"/><path d="M-80 450C100 45 450 680 960 140" stroke="#19171F" stroke-width="190" fill="none"/><path d="M-80 450C100 45 450 680 960 140" stroke="#FAF9F6" stroke-width="72" fill="none"/><circle cx="675" cy="120" r="75" fill="#FFBBD7"/><circle cx="675" cy="120" r="29" fill="#19171F"/></g>
+ <g id="front-skin"><g mask="url(#front-mask)"><use href="#artwork"/></g></g>
+ <g id="finished-front"><use href="#plain-card"/><use href="#front-skin"/></g>
+ <g id="finished-back"><rect width="856" height="540" rx="32" fill="#D9D4DF"/><rect y="70" width="856" height="120" fill="#26232E"/><g mask="url(#back-mask)"><use href="#artwork"/></g></g>
+ <clipPath id="fixed-edge"><rect width="250" height="540"/></clipPath>
+ <clipPath id="lifted-edge"><rect x="250" width="606" height="540"/></clipPath>
+</defs>
+<rect width="1024" height="768" fill="#EAE5ED"/>
+<rect x="28" y="28" width="968" height="712" rx="26" fill="none" stroke="#D8D0DE" stroke-width="2"/>
+<g transform="translate(168 175) scale(.8)" filter="url(#shadow)"><rect x="-12" y="-12" width="880" height="564" rx="42" fill="#FFFDFE" stroke="#C9BFCE" stroke-width="3"/><use href="#front-skin"/><path d="M0 0C65 12 70 65 70 132V540H0Q-56 485-64 397V115Q-55 38 0 0Z" fill="#FFF9E9" stroke="#CFC3C2" stroke-width="3"/><path d="M0 0C17 72 21 420 0 540" stroke="#BFB1AE" stroke-width="3" fill="none"/><path d="M70 132V530" stroke="#E0D7D2" stroke-width="5"/></g><path d="M215 635C105 624 74 569 101 486" fill="none" stroke="#AB4E70" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/><path d="M780 158L826 204M808 130L853 175" stroke="#C6BACF" stroke-width="4" stroke-linecap="round"/></svg>

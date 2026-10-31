@@ -1,0 +1,40 @@
+<x-layout :title="__('طريقة التركيب')" :description="__('صور وخطوات واضحة لتركيب ستيكر البطاقة: طابق القالب، نظّف، حاذِ، وثبّت بالتدريج.')">
+@php
+$steps = \App\Services\StoreSettings::get('installation_steps') ?? [
+    ['image' => '01-match', 'title' => 'طابق الستيكر قبل التقشير', 'body' => 'حط الستيكر فوق البطاقة وورقة الحماية بعدَها بمكانها. تأكد من تطابق الجهة والحواف وفتحة الشريحة مع بطاقتك.', 'tip' => 'إذا الفتحات مو مطابقة، توقف قبل التقشير وراجع دليل القوالب.', 'alt' => 'ستيكر على ورقة الحماية فوق بطاقة، مع توضيح مطابقة الحواف وفتحة الشريحة.'],
+    ['image' => '02-clean', 'title' => 'نظّف البطاقة وخليها جافة', 'body' => 'امسح البطاقة بقماش ناعم ونظيف بالطريقة المسموحة لبطاقتك. شيل الغبار وخلي السطح جاف تماماً قبل اللصق.', 'tip' => 'اختار سطح شغل نظيف وثابت حتى تتحكم بالمحاذاة.', 'alt' => 'قطعة قماش ناعمة تمسح سطح بطاقة قبل تثبيت الستيكر.'],
+    ['image' => '03-peel', 'title' => 'افتح طرف صغير من ورقة الحماية', 'body' => 'قشّر جزء بسيط من ورقة الحماية الخلفية، وخلي الباقي تحت الستيكر حتى يبقى سهل بالمسك والمحاذاة.', 'tip' => 'لا تلمس الجهة اللاصقة بأصابعك. ورقة الحماية تنشال وما تبقى على البطاقة.', 'alt' => 'طرف صغير من ورقة الحماية مطوي بعيداً عن الستيكر، وباقي الورقة ما زال تحته.'],
+    ['image' => '04-align', 'title' => 'حاذِ الشريحة وثبّت أول طرف', 'body' => 'حاذِ الفتحة مع الشريحة، وبعدها طابق أول حافة وثبّتها بخفة. تأكد من مكانها قبل ما تلصق بقية الستيكر.', 'tip' => 'فتحة الشريحة تبقى مكشوفة بالكامل، والستيكر ما يتجاوز حافة البطاقة.', 'alt' => 'أول طرف من الستيكر مثبت على البطاقة مع محاذاة فتحة الشريحة وبقاء باقي الستيكر مرفوعاً.'],
+    ['image' => '05-smooth', 'title' => 'ثبّت بالتدريج، من الوسط للحواف', 'body' => 'اسحب ورقة الحماية شويّة شويّة، ومرّر إصبعك أو قماش ناعم من الوسط باتجاه الحواف بضغط خفيف وأنت تثبّت الستيكر.', 'tip' => 'خلّي حركة التثبيت هادئة، ولا تسحب الستيكر أو تمدّه.', 'alt' => 'إصبع يمرر ضغطاً خفيفاً على سطح الستيكر، وأسهم من الوسط نحو الحواف مع سحب ورقة الحماية.'],
+    ['image' => '06-check', 'title' => 'راجع الحواف والفتحات', 'body' => 'تأكد أن الحواف مستقرة والشريحة مكشوفة. إذا طلبك وجهين، كرّر الخطوات للجهة الثانية وخلي الشريط المغناطيسي وكل المناطق المستثناة مكشوفة.', 'tip' => 'الوجهين ملصقان منفصلان: واحد للأمام وواحد للخلف.', 'alt' => 'النتيجة النهائية لستيكر أمامي يترك الشريحة مكشوفة، وستيكر خلفي منفصل يترك الشريط المغناطيسي مكشوفاً.'],
+];
+@endphp
+<div class="container page-space installation-page">
+    @if(\App\Services\StoreSettings::get('installation_video'))<video controls preload="metadata" style="width:100%;max-height:500px;border-radius:12px;margin-bottom:25px" src="{{ \App\Services\StoreSettings::get('installation_video') }}"><a href="{{ \App\Services\StoreSettings::get('installation_video') }}">{{ __('فيديو طريقة التركيب') }}</a></video>@endif
+    <div class="breadcrumbs"><a href="{{ route('home') }}">{{ __('الرئيسية') }}</a><span>/</span>{{ __('طريقة التركيب') }}</div>
+    <header class="page-heading installation-heading">
+        <h1>{{ __('شلون ألزگ الستيكر؟') }}</h1>
+        <p>{{ __('من أول طرف لآخر حافة، هاي الصور تمشي وياك خطوة بخطوة حتى تركّب الستيكر بترتيب ووضوح.') }}</p>
+        <div class="installation-kit"><span><x-icon name="card" size="18"/>{{ __('بطاقة + ستيكر مطابق') }}</span><span><x-icon name="check" size="18"/>{{ __('سطح نظيف وجاف') }}</span><span><x-icon name="layers" size="18"/>{{ __('قماش ناعم ونظيف') }}</span></div>
+    </header>
+    <ol class="install-steps" aria-label="{{ __('خطوات تركيب الستيكر') }}">
+        @foreach($steps as $step)
+        <li class="install-step" id="install-step-{{ $loop->iteration }}">
+            <figure class="install-visual"><img src="{{ ($step['image_url']??asset('art/install-'.$step['image'].'.svg')) }}" width="1024" height="768" loading="{{ $loop->first ? 'eager' : 'lazy' }}" decoding="async" alt="{{ __($step['alt']) }}"></figure>
+            <div class="install-copy">
+                <span class="install-index" aria-hidden="true" dir="ltr">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                <h2>{{ __($step['title']) }}</h2>
+                <p>{{ __($step['body']) }}</p>
+                <p class="install-tip">{{ __($step['tip']) }}</p>
+            </div>
+        </li>
+        @endforeach
+    </ol>
+    <div class="installation-notes">
+        <section class="panel"><h2>{{ __('طلبك شفاف + مطبوع؟') }}</h2><p>{{ __('الجهة الشفافة ستيكر منفصل غير مطبوع. ثبّته حسب قالب جهته، وخلي فتحة الشريحة والشريط المغناطيسي مكشوفين مثل الجهة المطبوعة.') }}</p></section>
+        <section class="panel"><h2>{{ __('القالب مو مطابق؟') }}</h2><p>{{ __('لا تقص فتحة الشريحة بنفسك ولا تثبّت ستيكر غير مطابق. راجع دليل القوالب أو تواصل ويانا حتى نراجع الحالة.') }}</p><a href="/guide" class="text-link">{{ __('دليل القوالب') }} <x-icon name="arrow-left" size="17"/></a></section>
+    </div>
+    <p class="installation-caption">{{ __('الرسوم للتوضيح ومو قياس فعلي. شكل الفتحات يعتمد على قالب طلبك؛ اتبع تعليمات الخامة المرفقة ويا الطلب.') }}</p>
+    <div class="installation-actions"><a class="button primary" href="{{ route('designs.index') }}">{{ __('شوف التصاميم') }} <x-icon name="arrow-left" size="18"/></a><a class="button secondary" href="/contact">{{ __('التواصل') }}</a></div>
+</div>
+</x-layout>
